@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0b0d">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Interaktivni mapa kyjevskych ctvrti. Rucni oznacovani a export. Funguje offline.">
+<title>Kyjev | Mapa zasa&#382;en&#253;ch &#269;tvrt&#237;</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3QgeD0iMSIgeT0iMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIiByeD0iOCIgZmlsbD0iIzExMTExNCIgc3Ryb2tlPSIjNDk0OTUwIi8+PHBhdGggZD0iTTggN3YxOU0yNSA3IDEwIDE4bTctNiA5IDE0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMi4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjUgNnY2IiBzdHJva2U9IiNlZDI1MzgiIHN0cm9rZS13aWR0aD0iMy42IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=">
+<style>
+:root{--bg:#0b0b0d;--panel:#121215;--panel2:#19191d;--edge:#2c2c32;--fg:#f5f5f7;--muted:#96969f;--accent:#ed2538;--red-soft:rgba(237,37,56,.12)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:14px;line-height:1.45}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.4}button,input,select{ -webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #fff;outline-offset:4px}button,input,select{border-radius:9px}button{color:inherit}input,select{width:100%;background:#0d0d10;border:1px solid #37373e;color:var(--fg);padding:11px 12px;min-height:44px}input::placeholder{color:#72727c}input:focus,select:focus{border-color:#aaa}input[type=checkbox]{accent-color:var(--accent)}button{transition:background .15s,border-color .15s,color .15s}svg{display:block}h1,h2,p{margin:0}button svg{flex:0 0 auto}a{color:inherit}.shell{max-width:1264px;margin:auto;padding:30px 36px 22px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:26px}.brand{display:flex;align-items:center;gap:14px}.brand-mark{height:42px;width:42px;border:1px solid #494950;display:grid;place-items:center;border-radius:10px;background:#111114}.brand-mark svg{height:25px;width:25px}.eyebrow{font-size:10px;letter-spacing:.16em;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:3px}h1{font-size:23px;font-weight:750;letter-spacing:-.035em;line-height:1.2}.offline{display:flex;align-items:center;gap:8px;font-size:11px;color:#b7b7bf;padding:8px 12px;border:1px solid var(--edge);border-radius:30px;white-space:nowrap}.offline-dot{height:6px;width:6px;border-radius:50%;background:#bdbdc5}.layout{display:grid;grid-template-columns:minmax(0,1fr) 344px;gap:24px;align-items:start}.canvas-wrap{min-width:0}.canvas-toolbar{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px;gap:10px}.canvas-toolbar .meta{font-size:11px;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:8px}.canvas-toolbar .meta b{color:#dedee3;font-weight:600}.toolbar-actions{display:flex;gap:5px}.icon-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;border:1px solid transparent;color:#ababB5;min-height:34px;padding:6px 8px;font-size:11px}.icon-btn:hover:not(:disabled){background:var(--panel2);color:white}.icon-btn svg{width:15px;height:15px}.canvas{border:1px solid var(--edge);border-radius:14px;overflow:hidden;background:#050506;box-shadow:0 20px 80px rgba(0,0,0,.16);position:relative}.canvas>svg{width:100%;height:auto;max-height:810px}.canvas [data-district]{cursor:pointer;outline:none;touch-action:manipulation}.canvas .region-shape{transition:fill .14s ease;stroke-linejoin:round}.canvas [data-district]:focus-visible .region-shape{stroke:#ffb6be;stroke-width:3}.canvas .district-label{pointer-events:none;user-select:none}.canvas-hint{display:flex;align-items:center;justify-content:space-between;gap:15px;color:var(--muted);font-size:11px;margin:12px 3px 0}.hint-left{display:flex;align-items:center;gap:7px}.hint-left svg{width:15px;height:15px;flex:0 0 auto}.counter-mini{font-variant-numeric:tabular-nums;white-space:nowrap;color:#bbbcc4}.sidebar{display:flex;flex-direction:column;gap:14px}.panel{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:20px}.section-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}.section-title{font-size:15px;letter-spacing:-.02em;font-weight:650}.count-badge{font-size:11px;color:#d6d6dd;background:#222228;border:1px solid #36363e;border-radius:6px;padding:2px 7px;font-variant-numeric:tabular-nums}.help{color:var(--muted);font-size:12px;line-height:1.6}.district-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}.district-btn{display:flex;align-items:center;gap:8px;background:#19191d;border:1px solid #323239;padding:10px 9px;min-height:42px;font-size:11.5px;font-weight:500;text-align:left;white-space:nowrap}.district-btn:hover{background:#25252b;border-color:#666}.district-btn[aria-pressed=true]{background:var(--red-soft);border-color:#b82a39;color:#fff}.district-dot{width:10px;height:10px;border:1px solid #72727d;border-radius:2px;flex:0 0 auto}.district-btn[aria-pressed=true] .district-dot{background:var(--accent);border-color:var(--accent)}.selection-note{margin-top:12px;min-height:18px;font-size:11px;line-height:1.5;color:#a3a3ad}.selection-note.has-selection{color:#ee909b}.form-stack{display:flex;flex-direction:column;gap:13px;margin-top:14px}.field label,.field-label{display:block;font-size:11px;color:#b6b6c0;margin-bottom:6px}.field input{font-size:12px}.optional{color:#74747f;font-size:10px}.segment{display:grid;grid-template-columns:1fr 1fr;background:#0c0c0f;border:1px solid #303039;border-radius:9px;padding:3px;gap:3px}.segment button{display:flex;align-items:center;justify-content:center;gap:7px;background:transparent;border:0;font-size:12px;min-height:34px;color:#91919d;border-radius:6px}.segment button[aria-pressed=true]{background:#313138;color:white}.theme-swatch{width:11px;height:11px;border:1px solid #aaa;border-radius:50%;background:#101014}.theme-swatch.white{background:#f5f5f5}.check-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:#d3d3dd;cursor:pointer;min-height:28px}.check-row input{appearance:none;-webkit-appearance:none;width:34px;height:20px;min-height:20px;flex:0 0 34px;padding:0;background:#36363e;border:0;border-radius:30px;position:relative;margin:0;cursor:pointer;transition:background .15s}.check-row input:after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#dcdce4;transition:transform .15s}.check-row input:checked{background:var(--accent)}.check-row input:checked:after{transform:translateX(14px);background:#fff}.export-panel{background:linear-gradient(145deg,#1a1418,#121215 62%)}.export-panel select{font-size:12px;margin-top:14px}.primary-btn{border:1px solid #fc4557;background:var(--accent);font-weight:650;color:#fff;width:100%;display:flex;align-items:center;justify-content:center;gap:9px;min-height:46px;margin-top:12px;box-shadow:0 3px 15px rgba(237,37,56,.09)}.primary-btn:hover{background:#ff3449}.primary-btn svg{width:17px;height:17px}.export-secondary{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:7px;margin-top:8px}.secondary-btn{background:#1d1d23;border:1px solid #34343d;min-height:36px;font-size:11px;color:#c6c6d0}.secondary-btn:hover{background:#303039;color:#fff}.export-note{margin-top:10px;font-size:10px;line-height:1.6;color:#93939e}.page-footer{margin-top:24px;padding-top:18px;border-top:1px solid #25252c;display:flex;gap:30px;justify-content:space-between;font-size:11px;line-height:1.6;color:#85858f}.page-footer p{max-width:610px}.page-footer details{max-width:340px;flex:0 0 310px}.page-footer summary{cursor:pointer;color:#b3b3bd}.page-footer details p{margin-top:8px}.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,15px);background:#eeeef3;color:#121217;border-radius:12px;padding:12px 18px;box-shadow:0 10px 60px #0009;font-size:13px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:calc(100vw - 30px);width:max-content;z-index:99}.toast.show{opacity:1;transform:translate(-50%,0)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.anchor-handle{cursor:grab}.moving-anchor .anchor-handle,.anchor-handle:active{cursor:grabbing}@media(hover:hover){.canvas [data-district]:not(.selected):hover .region-shape{fill:var(--map-hover)!important}.canvas [data-district].selected:hover .region-shape{fill:#ff4052!important}}@media(max-width:960px){.shell{padding:24px}.layout{grid-template-columns:minmax(0,1fr) 300px;gap:18px}.panel{padding:16px}.district-btn{font-size:10.5px;gap:6px;padding:9px 7px}.canvas-hint{font-size:10px}.page-footer details{flex-basis:250px}.canvas>svg{max-height:760px}}@media(max-width:720px){.shell{padding:18px 16px 24px}.topbar{margin-bottom:21px}.brand{gap:11px}.brand-mark{width:36px;height:36px}.eyebrow{font-size:9px}h1{font-size:20px}.offline{padding:7px 9px;font-size:10px}.layout{grid-template-columns:1fr;gap:20px}.canvas{border-radius:12px}.canvas>svg{max-height:none}.canvas-toolbar{margin-bottom:8px}.canvas-hint{margin-top:10px;font-size:11px}.sidebar{gap:12px}.panel{padding:18px}.district-btn{font-size:13px;min-height:45px;padding:11px 12px;gap:10px}.page-footer{flex-direction:column;gap:14px}.page-footer details{flex-basis:auto;max-width:none}.toolbar-actions .icon-btn{font-size:11px}.toast{bottom:18px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}@media print{body{background:#fff}.topbar,.sidebar,.canvas-toolbar,.canvas-hint,.page-footer,.toast{display:none}.shell{padding:0}.layout{display:block}.canvas{border:0;box-shadow:none;border-radius:0}.canvas>svg{max-height:none;width:100%}}
+
+/* Optional district captions; existing controls and map styling are untouched. */
+.district-notes{margin-top:15px;padding-top:14px;border-top:1px solid var(--edge)}
+.district-notes[hidden],.note-field[hidden],.notes-warning[hidden],.notes-reset[hidden]{display:none}
+.district-notes summary{cursor:pointer;font-size:12px;font-weight:650;color:#e4e4eb;min-height:26px}
+.notes-count{float:right;font-size:10px;font-weight:400;color:var(--muted);margin-top:2px}
+.notes-help{font-size:10.5px;line-height:1.65;color:var(--muted);margin:6px 0 12px}
+.note-field{margin-top:11px}.note-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:11px;color:#c6c6d0}
+.note-label label{font-weight:550}.note-label .optional{font-variant-numeric:tabular-nums}
+.note-field textarea{display:block;width:100%;min-height:66px;resize:vertical;max-height:240px;border-radius:9px;background:#0d0d10;border:1px solid #37373e;color:var(--fg);padding:10px 11px;font:12px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+.note-field textarea::placeholder{color:#72727c}.note-field textarea:focus{border-color:#aaa}.note-field textarea:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.notes-reset{display:block;background:transparent;border:0;color:#b6b6c0;font-size:10.5px;padding:9px 0 0;text-decoration:underline;text-underline-offset:3px}
+.notes-reset:hover{color:white}.notes-warning{font-size:10.5px;line-height:1.6;color:#ee909b;margin-top:10px}
+.canvas .district-annotation{cursor:grab;touch-action:none;user-select:none;outline:none}
+.canvas .district-annotation:focus-visible .annotation-card{stroke:#ed2538;stroke-width:3}
+.canvas.moving-note,.canvas.moving-note .district-annotation{cursor:grabbing}
+@media(max-width:720px){.note-field textarea{font-size:16px;min-height:76px}.note-label{font-size:12px}.notes-help{font-size:11px}}
+
+/* Optional experimental coordinate inputs. No existing layout rules changed. */
+.gps-editor{margin-top:9px;border:1px solid var(--edge);border-radius:8px;padding:9px 10px;background:#111114}
+.gps-editor summary{font-size:11px;cursor:pointer;color:#d1d1dc;min-height:22px;font-weight:500}
+.gps-linked{font-size:9px;color:#ee909b;margin-left:7px}
+.gps-editor [hidden]{display:none!important}.gps-help{font-size:10.5px;line-height:1.6;color:var(--muted);margin:6px 0 10px}
+.gps-editor label{display:block;font-size:10.5px;color:#b6b6c0;margin-bottom:5px}
+.gps-editor input{font-size:12px;min-width:0;padding:9px 8px}.gps-editor input[aria-invalid=true]{border-color:#ee6575}
+.gps-actions{display:flex;gap:6px;margin-top:8px}.gps-actions button{flex:1;font-size:10.5px;min-height:36px;padding:5px}
+.gps-status{font-size:10.5px;line-height:1.65;color:var(--muted);margin:9px 0 0;overflow-wrap:anywhere}
+.gps-status.is-error{color:#ff8a96}.gps-status.is-warning{color:#f4b8be}
+.gps-link{display:block;font-size:10.5px;line-height:1.55;color:#dedee7;margin-top:8px;text-decoration:underline;text-underline-offset:3px}
+.gps-revert{background:none;border:0;color:#b6b6c0;padding:5px 0;font-size:10px;text-decoration:underline}
+.gps-method{margin-top:14px;padding-top:12px;border-top:1px solid var(--edge)}
+.gps-method summary{font-size:11px;font-weight:500;color:#b6b6c0}.gps-method p{font-size:10.5px;line-height:1.7;color:var(--muted);margin-top:8px}
+.gps-method strong{color:#e6e6ee;font-weight:600}.gps-method a{color:#cacad4}.gps-method table{width:100%;font-size:10px;margin-top:8px;border-collapse:collapse;color:#b6b6c0}.gps-method td,.gps-method th{padding:4px 0;border-bottom:1px solid var(--edge);text-align:left}.gps-method th:last-child,.gps-method td:last-child{text-align:right}
+@media(max-width:720px){.gps-editor input{font-size:16px}.gps-editor summary,.gps-editor label{font-size:12px}.gps-actions button{font-size:12px;min-height:42px}.gps-help,.gps-status,.gps-link{font-size:11px}}
+
+/* Multiple points: additions within the existing side panel only. */
+.extra-point{padding-top:14px;margin-top:16px;border-top:1px solid var(--edge)}
+.extra-point .note-label{align-items:flex-start}.point-delete{flex:0 0 auto;background:transparent;border:0;color:#ee909b;font-size:10px;padding:0 0 5px;min-height:24px}
+.point-delete:hover{color:white;text-decoration:underline}.point-character-count{text-align:right;margin-top:3px}
+.add-point-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#19191d;border:1px dashed #565660;color:#dedee7;font-size:11.5px;min-height:38px;margin-top:12px;padding:8px}
+.add-point-btn:hover{border-color:#b6b6c0;background:#25252b}.add-point-btn span{font-size:20px;line-height:1}
+.export-error{color:#ff9ba6;font-size:11px;line-height:1.6;margin-top:10px}.export-error[hidden],.png-ready[hidden]{display:none!important}
+.png-ready{border:1px solid #4b4147;border-radius:9px;padding:11px;margin-top:12px;background:#171418}
+.png-ready p{font-size:11px;color:#d8d8e1;margin-bottom:8px}.png-ready .png-save-link{display:block;text-align:center;background:#282229;border:1px solid #53424c;border-radius:7px;padding:9px;font-size:11px;text-decoration:none}
+.png-preview-button{display:block;margin:7px auto 0;background:transparent;border:0;color:#b6b6c0;font-size:10.5px;padding:5px;text-decoration:underline}
+.png-dialog{background:#111114;color:#f5f5f7;border:1px solid #494950;border-radius:14px;padding:20px;width:min(600px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overflow:auto}
+.png-dialog::backdrop{background:rgba(0,0,0,.8)}.png-dialog header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:13px}.png-dialog h2{font-size:17px}.png-dialog p{font-size:12px;color:#b6b6c0;line-height:1.65;margin:10px 0}
+.png-dialog img{display:block;width:auto;max-width:100%;height:auto;max-height:55vh;margin:auto;border:1px solid #34343d}
+.png-dialog .dialog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.png-dialog .dialog-actions a,.png-dialog .dialog-actions button{flex:1;min-width:130px;text-align:center;display:block;border:1px solid #5b4a50;background:#282229;border-radius:8px;padding:11px;font:12px Arial,sans-serif;color:white;text-decoration:none;cursor:pointer}
+.png-dialog .dialog-actions [hidden]{display:none}.png-close{background:none;border:1px solid #37373e;color:#b6b6c0;padding:6px 10px;border-radius:6px;font-size:12px;min-height:34px}
+@media(max-width:720px){.point-delete{font-size:11px;min-height:32px}.add-point-btn{font-size:12px;min-height:44px}.png-ready p,.png-ready a{font-size:12px}.png-dialog{padding:16px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M5 5v18M22 5 7 16m7-6 9 13" stroke="white" stroke-width="1.8"/><path d="M22 4v5" stroke="#ed2538" stroke-width="3"/></svg></div><div><div class="eyebrow">Interaktivn&#237; mapa</div><h1>Kyjev / &#269;tvrti</h1></div></div>
+    <div class="offline"><span class="offline-dot"></span>Funguje offline</div>
+  </header>
+  <main class="layout">
+    <section class="canvas-wrap" aria-label="Interaktivni mapa">
+      <div class="canvas-toolbar"><div class="meta"><b>N&#193;HLED</b><span id="size-label">1080 &#215; 1350</span></div><div class="toolbar-actions"><button class="icon-btn" id="undo" disabled title="Vratit posledni zmenu"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7 4-4 4 4 4M3 8h8a5 5 0 0 1 0 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Zp&#283;t</button><button class="icon-btn" id="clear" disabled><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Vymazat v&#253;b&#283;r</button></div></div>
+      <div class="canvas" id="preview"></div>
+      <div class="canvas-hint"><div class="hint-left"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 2 10 8-5 1-2 6-3-15Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Klepni na &#269;tvr&#357;. Znovu klepni pro zru&#353;en&#237;.</div><span class="counter-mini" id="count-bottom">0 / 10</span></div>
+    </section>
+    <aside class="sidebar" aria-label="Nastaveni mapy">
+      <section class="panel"><div class="section-top"><h2 class="section-title">Ozna&#269;en&#233; &#269;tvrti</h2><span class="count-badge" id="count">0 / 10</span></div><p class="help">Vyber v map&#283; nebo v seznamu.</p><div class="district-grid" id="district-buttons"></div><p class="selection-note" id="selection-note" aria-live="polite">Zat&#237;m nen&#237; nic ozna&#269;eno.</p><details class="district-notes" id="district-notes" hidden open><summary>Popisky &#269;tvrt&#237;<span class="notes-count" id="notes-count">voliteln&#233;</span></summary><p class="notes-help" id="notes-help">Napi&#353; popisek k ozna&#269;en&#233; &#269;tvrti. Zobraz&#237; se v map&#283; i v exportu. V map&#283; ho m&#367;&#382;e&#353; p&#345;et&#225;hnout.</p><div id="note-fields"></div><details class="gps-method"><summary>GPS: ov&#283;&#345;en&#237; a omezen&#237;</summary><p><strong>Experiment&#225;ln&#237; sou&#345;adnicov&#225; vrstva.</strong> Sou&#345;adnice z&#367;st&#225;vaj&#237; p&#345;esn&#283; podle zad&#225;n&#237;, ale jejich um&#237;st&#283;n&#237; v t&#233;to kresb&#283; je pouze orienta&#269;n&#237;. Nejde o p&#345;esnost na konkr&#233;tn&#237; d&#367;m.</p><p>Afinn&#237; p&#345;evod z 9 ru&#269;n&#283; sp&#225;rovan&#253;ch bod&#367;. Dal&#353;&#237;ch 13 bod&#367; ze stejn&#233;ho referen&#269;n&#237;ho souboru bylo vynech&#225;no z v&#253;po&#269;tu a pou&#382;ito jen ke kontrole. Medi&#225;n jejich odchylek: <strong>217 m</strong>, maximum: <strong>1 839 m</strong>. N&#283;kter&#233; hranice se neshoduj&#237; v&#253;razn&#283;. To nen&#237; garantovan&#225; chyba libovoln&#233;ho vlo&#382;en&#233;ho bodu.</p><p>Hranice v kresb&#283; nebyly upraveny. Bod se nep&#345;ichyt&#225;v&#225; do vybran&#233; &#269;tvrti. Sou&#345;adnice neodhaluj&#237;, zda se ud&#225;lost skute&#269;n&#283; stala, ani nepotvrzuj&#237; spr&#225;vn&#237; p&#345;&#237;slu&#353;nost.</p><p>Referen&#269;n&#237; data: <a href="https://github.com/butsasha/Kyiv_geo/blob/main/Kyiv_districts.geojson" target="_blank" rel="noopener noreferrer">Kyiv_geo / hranice s OSM_ID</a>; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">&#169; OpenStreetMap contributors</a>. Nejde o &#250;&#345;edn&#237; ani &#382;iv&#253; podklad. &#218;pln&#225; kalibrace je ulo&#382;ena p&#345;&#237;mo v HTML.</p><p>Testovac&#237; verze ukl&#225;d&#225; sv&#367;j stav odd&#283;len&#283; od p&#367;vodn&#237; mapy. B&#283;&#382;n&#233; ovl&#225;d&#225;n&#237; je offline. Extern&#237; mapa se otev&#345;e pouze po kliknut&#237; na odkaz.</p></details><button type="button" class="notes-reset" id="reset-note-positions" hidden>Automaticky rozm&#237;stit popisky</button><p class="notes-warning" id="notes-warning" hidden>N&#283;kter&#233; popisky se p&#345;ekr&#253;vaj&#237;. P&#345;et&#225;hni je v map&#283; nebo zkra&#357; jejich text.</p></details></section>
+      <section class="panel"><h2 class="section-title">Vzhled mapy</h2><div class="form-stack">
+        <div class="field"><label for="map-title">Nadpis</label><input id="map-title" type="text" value="KYJEV" maxlength="30" autocomplete="off" spellcheck="false"></div>
+        <div class="field"><label for="map-subtitle">Podtitulek</label><input id="map-subtitle" type="text" value="ZASA&#381;EN&#201; &#268;TVRTI" maxlength="60" autocomplete="off" spellcheck="false"></div>
+        <div class="field"><label for="map-date">Datum / &#269;as <span class="optional">&middot; voliteln&#233;</span></label><input id="map-date" type="text" maxlength="60" placeholder="Dopl&#328; podle ud&#225;losti" autocomplete="off"></div>
+        <div><span class="field-label">Barevn&#233; proveden&#237;</span><div class="segment" role="group" aria-label="Barevne provedeni"><button id="theme-dark" aria-pressed="true"><span class="theme-swatch"></span>&#268;ern&#225;</button><button id="theme-light" aria-pressed="false"><span class="theme-swatch white"></span>B&#237;l&#225;</button></div></div>
+        <label class="check-row" for="show-labels">N&#225;zvy &#269;tvrt&#237;<input id="show-labels" type="checkbox" checked></label>
+        <label class="check-row" for="show-heading">Nadpis a legenda<input id="show-heading" type="checkbox" checked></label>
+      </div></section>
+      <section class="panel export-panel"><h2 class="section-title">P&#345;ipraveno na Instagram</h2><label class="sr-only" for="export-format">Format obrazku</label><select id="export-format"><option value="post">P&#345;&#237;sp&#283;vek &middot; 1080 &#215; 1350</option><option value="story">Stories &middot; 1080 &#215; 1920</option><option value="square">&#268;tverec &middot; 1080 &#215; 1080</option></select><button class="primary-btn" id="export-png"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2v10m-4-4 4 4 4-4M3 13v4h14v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>St&#225;hnout PNG</button><div class="export-secondary"><button class="secondary-btn" id="export-png-transparent">PNG bez pozad&#237;</button><button class="secondary-btn" id="export-svg">St&#225;hnout SVG</button><button class="secondary-btn" id="export-html">Ulo&#382;it HTML s v&#253;b&#283;rem</button></div><p class="export-note" id="save-note">V&#253;b&#283;r se ukl&#225;d&#225; v tomto prohl&#237;&#382;e&#269;i. HTML s v&#253;b&#283;rem uchov&#225; i aktu&#225;ln&#237; ozna&#269;en&#237;.</p><p id="export-error" class="export-error" role="alert" hidden></p><div class="png-ready" id="png-ready" hidden><p id="png-ready-info"></p><a class="png-save-link" id="png-save-link" download>Ulo&#382;it p&#345;ipraven&#233; PNG</a><button type="button" class="png-preview-button" id="png-show-preview">N&#225;hled / ulo&#382;en&#237; na mobilu</button></div></section>
+    </aside>
+  </main>
+  <footer class="page-footer"><p>&#268;erven&#225; znamen&#225; tvoje ru&#269;n&#237; ozna&#269;en&#237; &#269;tvrti, ne rozsah po&#353;kozen&#237;. Neozna&#269;en&#225; &#269;tvr&#357; neznamen&#225; potvrzen&#237;, &#382;e nebyla zasa&#382;ena. Mapa nena&#269;&#237;t&#225; &#382;&#225;dn&#225; &#382;iv&#225; data.</p><details><summary>O map&#283; a ovl&#225;d&#225;n&#237;</summary><p>Hranice a n&#225;zvy jsou p&#345;evzat&#233; z dodan&#233; p&#345;edlohy. V&#353;ech 10 &#269;tvrt&#237; tvo&#345;&#237; samostatn&#233; vektorov&#233; plochy. Ovl&#225;d&#225;n&#237;: kliknut&#237;, dotyk nebo Tab a mezern&#237;k / Enter. Na mobilu lze drobn&#233; &#269;tvrti ozna&#269;it v seznamu. Soubor nepot&#345;ebuje p&#345;ipojen&#237; k internetu. Obraz se exportuje bez ovl&#225;dac&#237;ch prvk&#367;.</p></details></footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog id="png-preview" class="png-dialog" aria-labelledby="png-preview-title"><header><h2 id="png-preview-title">PNG je p&#345;ipraven&#233;</h2><button type="button" id="png-close" class="png-close">Zav&#345;&#237;t</button></header><img id="png-preview-image" alt="Exportovan&#225; mapa Kyjeva"><p>Obr&#225;zek ulo&#382;&#237;&#353; tla&#269;&#237;tkem n&#237;&#382;e. Na telefonu m&#367;&#382;e&#353; tak&#233; podr&#382;et prst p&#345;&#237;mo na obr&#225;zku.</p><div class="dialog-actions"><a id="png-modal-save" download>St&#225;hnout PNG</a><a id="png-modal-open" target="_blank" rel="noopener">Otev&#345;&#237;t obr&#225;zek</a><button type="button" id="png-share" hidden>Sd&#237;let / ulo&#382;it</button></div></dialog>
+<script id="embedded-state" type="application/json">{}</script>
+<script>
+'use strict';
+const DISTRICTS = [{"id":"obolon","name":"Obolon","label":"OBOLON","x":224,"y":94,"font":14.5,"path":"M284,203.5 L264,183.5 L238.5,165 L239.5,135 L240.5,134 L240,120.5 L187,123.5 L182,124.5 L157,135.5 L81.5,78 L85,73.5 L98,73.5 L110,87.5 L111.5,86 L112,81.5 L119.5,82 L119.5,80 L115.5,76 L115.5,72 L123,71.5 L124.5,70 L112.5,63 L113.5,57 L112,55.5 L98,51.5 L94.5,49 L118,43.5 L127,43.5 L159,48.5 L160.5,47 L161.5,27 L163,23.5 L254,30.5 L254.5,35 L252.5,44 L263,45.5 L266,52.5 L272,50.5 L273.5,52 L274,59.5 L287,59.5 L286.5,71 L293.5,84 L300,88.5 L314,92.5 L316.5,95 L321.5,106 L330.5,120 L328.5,130 L313.5,160 L315.5,166 L324.5,181 L322.5,186 L329.5,194 L288,194.5 L286.5,196 L286.5,200 Z","area":21978},{"id":"desna","name":"Desna","label":"DESNA","x":452,"y":143,"font":14.5,"path":"M443,257.5 L440,257.5 L435,249.5 L423,253.5 L418.5,252 L418.5,249 L421.5,243 L413.5,223 L411,220.5 L404,219.5 L393.5,206 L393.5,204 L401.5,194 L397,178.5 L338,178.5 L335,180.5 L324.5,183 L324.5,181 L315.5,166 L313.5,160 L327.5,131 L331,134.5 L343,134.5 L349,144.5 L355,145.5 L356.5,144 L356.5,131 L343.5,117 L343.5,115 L350,108.5 L442,119.5 L455.5,100 L455.5,93 L461,88.5 L491,75.5 L493.5,77 L494,88.5 L509,85.5 L510.5,82 L509.5,81 L507.5,53 L519.5,40 L514,30.5 L517,30.5 L546,40.5 L563,40.5 L567,57.5 L581,48.5 L597,65.5 L614,72.5 L614.5,75 L610.5,82 L616.5,86 L620.5,119 L612,123.5 L563,140.5 L562,148.5 L560,148.5 L557,145.5 L550,145.5 L552,148.5 L556.5,151 L557.5,163 L553,165.5 L542,167.5 L541.5,172 L540,173.5 L530,174.5 L528.5,176 L539.5,189 L538,190.5 L447,223.5 L445.5,228 L445.5,239 L452.5,244 L452.5,253 Z","area":29778},{"id":"podil","name":"Podil","label":"PODIL","x":191,"y":164,"font":13.5,"path":"M316,236.5 L311,236.5 L305,233.5 L299,233.5 L294,235.5 L292.5,233 L291.5,222 L290,220.5 L279,221.5 L277.5,220 L277,210.5 L271,210.5 L269.5,209 L268.5,204 L259,198.5 L257,198.5 L251,203.5 L248.5,200 L249.5,195 L241,195.5 L240.5,191 L239,189.5 L232,191.5 L220,189.5 L213.5,202 L211,204.5 L198,204.5 L150.5,169 L147.5,140 L182,124.5 L240,120.5 L240.5,134 L239.5,135 L238.5,165 L264,183.5 L284,203.5 L286.5,200 L286.5,196 L288,194.5 L329.5,195 L326.5,205 L313.5,220 L313.5,224 L316.5,233 Z","area":8142},{"id":"svyatoshyn","name":"Svyatoshyn","label":"SVYATOSHYN","x":111,"y":206,"font":12.5,"path":"M199,327.5 L183,321.5 L151.5,294 L141.5,275 L141.5,252 L134,251.5 L131,246.5 L126,250.5 L115,253.5 L111,253.5 L106,255.5 L93,255.5 L64,244.5 L62.5,247 L62.5,254 L52.5,268 L54.5,273 L53,275.5 L47,277.5 L41,269.5 L35,269.5 L23,283.5 L21.5,282 L20.5,274 L15.5,270 L20.5,259 L20.5,256 L25.5,254 L25.5,249 L16.5,239 L17.5,230 L39.5,206 L28.5,199 L31.5,182 L33,180.5 L41,180.5 L43.5,178 L52.5,158 L52.5,155 L42.5,144 L42.5,142 L53,128.5 L73,119.5 L75.5,117 L77,105.5 L86,106.5 L87.5,105 L90.5,92 L84.5,83 L85,81.5 L87,81.5 L156.5,135 L154,137.5 L147.5,140 L150.5,169 L190,197.5 L199.5,207 L202.5,216 L195.5,216 L198.5,234 L180.5,250 L181.5,266 L203.5,304 L206,306.5 L213.5,305 L213.5,307 Z","area":22648},{"id":"shevchenko","name":"Shevchenko","label":"SHEVCHENKO","x":253,"y":223,"font":10.2,"path":"M300,266.5 L291,264.5 L287.5,262 L283.5,245 L281,239.5 L226,223.5 L219,222.5 L218,220.5 L208,219.5 L202.5,216 L198.5,205 L211,204.5 L213.5,202 L220,189.5 L230,191.5 L239,189.5 L240.5,191 L241,195.5 L249.5,195 L248.5,200 L251,203.5 L257,198.5 L267,202.5 L271,210.5 L277.5,211 L277.5,220 L279,221.5 L290,220.5 L291.5,222 L292.5,233 L294,235.5 L299,233.5 L305,233.5 L311,236.5 L316.5,237 L304.5,253 L306.5,262 Z","area":3154,"rotate":16},{"id":"solomyansk","name":"Solom'yansk","label":"SOLOM'YANSK","x":237.0,"y":280.0,"font":10.9,"path":"M219,356.5 L198.5,331 L198.5,328 L202.5,324 L213.5,307 L213.5,305 L206,306.5 L203.5,304 L182.5,268 L180.5,260 L180.5,250 L198.5,234 L195.5,220 L196,215.5 L203,216.5 L208,219.5 L218,220.5 L219,222.5 L226,223.5 L281,239.5 L283.5,245 L287.5,262 L285,264.5 L281,265.5 L280.5,267 L294.5,285 L296.5,293 L295,295.5 L289,294.5 L280.5,300 L289.5,312 L288,313.5 L275,315.5 L268.5,328 L266,330.5 L262,329.5 L252.5,330 L255.5,338 L254,341.5 L243,341.5 L231,354.5 L226,349.5 Z","area":10131},{"id":"pechersk","name":"Pechersk","label":"PECHERSK","x":338.0,"y":301.0,"font":9.6,"path":"M337,328.5 L306.5,316 L308.5,304 L306.5,297 L304.5,295 L305.5,290 L303.5,288 L301.5,282 L300.5,266 L306.5,262 L304.5,253 L316,238.5 L320,242.5 L335,248.5 L354.5,269 L363.5,284 L365.5,291 L368.5,293 L374.5,304 L373,306.5 L356,313.5 L344,324.5 Z","area":4057},{"id":"dnipro","name":"Dnipro","label":"DNIPRO","x":406.0,"y":264.0,"font":13.5,"path":"M376,305.5 L374.5,305 L368.5,293 L365.5,291 L364.5,286 L354.5,269 L335,248.5 L320,242.5 L316.5,238 L313.5,220 L326.5,205 L329.5,196 L329.5,193 L322.5,186 L324,183.5 L335,180.5 L338,178.5 L397,178.5 L401.5,194 L395.5,201 L393.5,206 L404,219.5 L411,220.5 L413.5,223 L421.5,243 L418.5,249 L418.5,252 L423,253.5 L435,249.5 L440,257.5 L449,255.5 L452.5,253 L452.5,244 L445.5,239 L445.5,228 L447,223.5 L525,195.5 L536,190.5 L540.5,190 L537.5,212 L543.5,219 L542.5,224 L534,225.5 L499,260.5 L378,303.5 Z","area":14449},{"id":"darnytsya","name":"Darnytsya","label":"DARNYTSYA","x":473,"y":334,"font":14.0,"path":"M396,433.5 L390.5,428 L366.5,394 L363.5,380 L363.5,374 L371.5,349 L381.5,335 L382.5,319 L375.5,306 L378,303.5 L495,262.5 L499,260.5 L534,225.5 L543,224.5 L544.5,226 L540.5,230 L539.5,234 L544.5,240 L540,242.5 L538.5,246 L566,264.5 L568.5,267 L567.5,275 L569,276.5 L585,283.5 L587.5,286 L592.5,294 L594.5,300 L585.5,310 L599,323.5 L616.5,330 L607.5,354 L605,354.5 L581,341.5 L566,345.5 L565.5,353 L567.5,363 L565,365.5 L557.5,369 L562.5,374 L564.5,381 L564,384.5 L559,384.5 L548,381.5 L541,381.5 L532,383.5 L519,379.5 L515,379.5 L512.5,377 L514.5,373 L506,364.5 L497.5,373 L498.5,385 L490.5,391 L497.5,408 L482,419.5 L480,419.5 L468,408.5 L460,408.5 L459,409.5 L457.5,408 L459.5,403 L459,399.5 L433,403.5 L431,393.5 L395,398.5 L393.5,400 L406.5,414 L404,416.5 L401,416.5 L393.5,420 L397.5,429 Z","area":26618},{"id":"holosiyiv","name":"Holosiyiv","label":"HOLOSIYIV","x":322,"y":418,"font":14.0,"path":"M373,630.5 L370,630.5 L365.5,625 L366.5,599 L360.5,570 L353.5,557 L352,555.5 L328.5,555 L331.5,540 L320.5,531 L325.5,516 L323.5,507 L305,506.5 L303.5,505 L314.5,491 L314,489.5 L306.5,486 L312.5,467 L312.5,463 L298,457.5 L287,446.5 L278,453.5 L276,453.5 L267.5,445 L267.5,443 L274.5,436 L273,434.5 L267,430.5 L264,430.5 L257,433.5 L254.5,433 L256.5,426 L251.5,421 L251.5,406 L253.5,401 L247.5,397 L246.5,391 L241,389.5 L232,389.5 L231.5,398 L230,399.5 L218,395.5 L216.5,394 L215.5,389 L215.5,379 L208.5,372 L208.5,370 L220.5,354 L226,349.5 L231,354.5 L243,341.5 L254,341.5 L255.5,338 L252.5,331 L253,329.5 L266,330.5 L268.5,328 L275,315.5 L284,314.5 L289.5,312 L280.5,301 L282,298.5 L289,294.5 L295,295.5 L296.5,294 L294.5,285 L280.5,267 L281,265.5 L285,264.5 L287,262.5 L300.5,267 L301.5,282 L303.5,288 L305.5,290 L304.5,295 L306.5,297 L308.5,304 L306.5,312 L306.5,316 L308,317.5 L337,328.5 L344,324.5 L356,313.5 L374,305.5 L376.5,307 L382.5,319 L381.5,335 L371.5,349 L363.5,374 L365.5,391 L368.5,397 L400.5,441 L408.5,467 L426.5,490 L423.5,524 L422,525.5 L390.5,526 L392.5,540 L396.5,550 L398,551.5 L403.5,552 L406.5,566 L421.5,589 L421.5,591 L415.5,597 L419.5,613 Z","area":32257}];
+const STORAGE_KEY='kyiv-district-map-gps-multipoint-v2';
+const PREVIOUS_STORAGE_KEY='kyiv-district-map-gps-test-v1';
+const LEGACY_STORAGE_KEY='kyiv-district-map-v1';
+const DEFAULT={selected:[],points:[],notes:{},notePositions:{},anchorPositions:{},gps:{},title:'KYJEV',subtitle:'ZASA\u017dEN\u00c9 \u010cTVRTI',date:'',theme:'dark',labels:true,heading:true,format:'post'};
+const FORMATS={post:{w:1080,h:1350},story:{w:1080,h:1920},square:{w:1080,h:1080}};
+const PALETTES={dark:{bg:'#08080a',fg:'#f7f7f9',muted:'#a4a4b0',fill:'#151518',stroke:'#eeeeF3',hover:'#313138',rule:'#393941'},light:{bg:'#ffffff',fg:'#131318',muted:'#666672',fill:'#ffffff',stroke:'#25252b',hover:'#e5e5eb',rule:'#d1d1d8'}};
+const RED='#ed2538';
+const ids=new Set(DISTRICTS.map(d=>d.id));
+const $=s=>document.querySelector(s);
+const xmlText=s=>Array.from(String(s)).filter(c=>{const n=c.codePointAt(0);return n===9||n===10||n===13||(n>=32&&n<=0xd7ff)||(n>=0xe000&&n<=0xfffd)||(n>=0x10000&&n<=0x10ffff)}).join('');
+const esc=s=>xmlText(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+
+// Additional points are annotation records, never changes to district geometry.
+const MAX_EXTRA_POINTS=100;
+function cleanPoints(input){
+ const out=[],seen=new Set();
+ if(Array.isArray(input))for(const p of input){
+  if(out.length>=MAX_EXTRA_POINTS)break;
+  if(p&&typeof p.id==='string'&&/^pt_[a-z0-9_-]{1,64}$/.test(p.id)&&ids.has(p.district)&&!seen.has(p.id)){
+   out.push({id:p.id,district:p.district});seen.add(p.id);
+  }
+ }
+ return out;
+}
+function allNoteEntries(points=state.points){
+ const out=[];
+ for(const d of DISTRICTS){
+  const more=points.filter(p=>p.district===d.id);
+  out.push({...d,district:d.id,isExtra:false,number:1,name:more.length?d.name+' \u00b7 bod 1':d.name,label:more.length?d.label+' \u00b7 1':d.label});
+  more.forEach((p,i)=>out.push({...d,id:p.id,district:d.id,isExtra:true,number:i+2,name:d.name+' \u00b7 bod '+(i+2),label:d.label+' \u00b7 '+(i+2)}));
+ }
+ return out;
+}
+function noteEntry(id){return allNoteEntries().find(d=>d.id===id)}
+function hasNoteId(id){return ids.has(id)||state.points.some(p=>p.id===id)}
+function districtFor(id){return ids.has(id)?id:state.points.find(p=>p.id===id)?.district}
+function visibleNoteEntries(){return allNoteEntries().filter(d=>state.selected.includes(d.district))}
+function activeNoteEntries(){return visibleNoteEntries().filter(d=>(state.notes[d.id]||'').trim()||state.gps[d.id])}
+function newPointId(){let id;do{id='pt_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,10)}while(hasNoteId(id));return id}
+function addPoint(district){
+ if(!ids.has(district))return;
+ if(state.points.length>=MAX_EXTRA_POINTS){notify('V t\u00e9to map\u011b je u\u017e 100 dal\u0161\u00edch bod\u016f.');return}
+ snapshot();const id=newPointId();state.points.push({id,district});
+ if(!state.selected.includes(district))state.selected.push(district);
+ sync();$('#district-notes').open=true;
+ const input=$('#gps-'+id);input.closest('details').open=true;input.focus();
+ notify('Nov\u00fd bod m\u00e1 vlastn\u00ed sou\u0159adnice a popisek.');
+}
+function removePoint(id){
+ const entry=noteEntry(id);if(!entry||!entry.isExtra)return;
+ snapshot();state.points=state.points.filter(p=>p.id!==id);delete state.notes[id];delete state.gps[id];
+ for(const f of Object.keys(FORMATS))if(state.notePositions[f])delete state.notePositions[f][id];
+ noteEditSession=null;sync();document.querySelector('[data-add-point="'+entry.district+'"]').focus({preventScroll:true});
+ notify('Bod byl odstran\u011bn. Tla\u010d\u00edtkem Zp\u011bt jej vr\u00e1t\u00ed\u0161.');
+}
+function extraPointMarkup(d){return `<div class="extra-point note-field" data-extra-point="${d.id}" id="note-field-${d.id}"><div class="note-label"><label for="note-${d.id}">${esc(d.name)}</label><button class="point-delete" type="button" data-delete-point="${d.id}" aria-label="${esc('Odstranit '+d.name)}">Odstranit bod</button></div><textarea id="note-${d.id}" data-note-input="${d.id}" maxlength="${NOTE_LIMIT}" rows="2" placeholder="Popisek tohoto bodu\u2026" aria-describedby="notes-help" autocomplete="off"></textarea><div class="point-character-count optional" id="note-count-${d.id}">0 / ${NOTE_LIMIT}</div>${gpsEditorMarkup(d)}</div>`}
+function syncExtraPointEditors(){
+ const points=state.points;
+ document.querySelectorAll('[data-extra-point]').forEach(el=>{if(!points.some(p=>p.id===el.dataset.extraPoint))el.remove()});
+ for(const d of allNoteEntries()){
+  if(!d.isExtra)continue;
+  let el=$('#note-field-'+d.id);
+  if(!el){$('#extra-points-'+d.district).insertAdjacentHTML('beforeend',extraPointMarkup(d));el=$('#note-field-'+d.id)}
+  el.querySelector('label[for="note-'+d.id+'"]').textContent=d.name;
+  el.querySelector('[data-delete-point]').setAttribute('aria-label','Odstranit '+d.name);
+ }
+ for(const d of DISTRICTS){
+  const entries=allNoteEntries().filter(e=>e.district===d.id);
+  $('#note-field-'+d.id).querySelector('label[for="note-'+d.id+'"]').textContent=entries[0].name;
+  const add=document.querySelector('[data-add-point="'+d.id+'"]');add.disabled=state.points.length>=MAX_EXTRA_POINTS;
+ }
+}
+function initializeExtraPointEditors(){
+ for(const d of DISTRICTS)$('#note-field-'+d.id).insertAdjacentHTML('beforeend',`<div id="extra-points-${d.id}"></div><button type="button" class="add-point-btn" data-add-point="${d.id}"><span aria-hidden="true">+</span> P\u0159idat dal\u0161\u00ed bod</button>`);
+ $('#note-fields').addEventListener('click',e=>{
+  const add=e.target.closest('[data-add-point]');if(add){addPoint(add.dataset.addPoint);return}
+  const del=e.target.closest('[data-delete-point]');if(del)removePoint(del.dataset.deletePoint);
+ });
+}
+// All pending coordinates are validated before any export. Valid drafts are saved
+// together; invalid drafts are shown explicitly instead of silently blocking PNG.
+function prepareExport(){
+ const pending=[...document.querySelectorAll('[data-gps-input][data-dirty]')].filter(el=>state.selected.includes(districtFor(el.dataset.gpsInput)));
+ const changes=[];
+ for(const input of pending){
+  const id=input.dataset.gpsInput;
+  if(!input.value.trim()&&!state.gps[id]){delete input.dataset.dirty;continue}
+  const parsed=parseGps(input.value),result=parsed.ok?geoAssess(parsed.point,districtFor(id)):parsed;
+  if(!result.ok){
+   const status=$('#gps-status-'+id);status.textContent=result.error+' Oprav sou\u0159adnice, nebo zru\u0161 rozepsanou zm\u011bnu.';
+   status.classList.add('is-error');status.classList.remove('is-warning');input.setAttribute('aria-invalid','true');
+   $('#district-notes').open=true;input.closest('details').open=true;input.scrollIntoView({block:'center',behavior:'auto'});input.focus({preventScroll:true});
+   $('#export-error').hidden=false;$('#export-error').textContent='Export pozastaven: '+noteEntry(id).name+' m\u00e1 neplatn\u00e9 sou\u0159adnice.';
+   notify('Oprav ozna\u010den\u00e9 sou\u0159adnice. Nic nebylo potichu p\u0159esunuto.');return false;
+  }
+  changes.push({id,input,point:parsed.point});
+ }
+ if(changes.length){snapshot();for(const c of changes){state.gps[c.id]=c.point;for(const f of Object.keys(FORMATS))if(state.anchorPositions[f])delete state.anchorPositions[f][c.id];delete c.input.dataset.dirty;c.input.removeAttribute('aria-invalid')}sync()}
+ $('#export-error').hidden=true;return true;
+}
+
+// Experimental affine reference layer. The source drawing is never altered.
+// Control residuals are NOT a guaranteed accuracy bound for arbitrary locations.
+const GEO_CALIBRATION = {"model":"affine","origin":[30.5,50.45],"coefficients":[[1021.3069467199107,32.91629637355879],[52.71596869690545,-1605.5010382788018],[286.5278352952317,247.49850179786478]],"reference":"https://raw.githubusercontent.com/butsasha/Kyiv_geo/main/Kyiv_districts.geojson","fitCount":9,"checkCount":13,"checkRmsM":798,"checkMedianM":217,"checkMaxM":1839,"points":[{"id":"N01","name":"Obolon north-west rectangular corner","lon":30.3709837,"lat":50.5864363,"x":163,"y":23.5,"role":"fit","sourceLine":1689,"predictedX":161.9549635850533,"predictedY":24.20314172112714,"errorPx":1.2595671433291291,"errorM":87.246353099848},{"id":"N02","name":"Obolon north-east rectangular corner","lon":30.4631088,"lat":50.5843452,"x":254,"y":30.5,"role":"check","sourceLine":1699,"predictedX":255.9327338201781,"predictedY":30.59282203731769,"errorPx":1.934961485475109,"errorM":134.11239520703887},{"id":"N03","name":"Desna eastern extremity","lon":30.8234573,"lat":50.537267,"x":620.5,"y":119,"role":"fit","sourceLine":3536,"predictedX":621.4773871927717,"predictedY":118.03825904138438,"errorPx":1.3712152989494846,"errorM":95.01149826672714},{"id":"W01","name":"Svyatoshyn western tip","lon":30.2363911,"lat":50.4306638,"x":15.5,"y":270,"role":"fit","sourceLine":4909,"predictedX":16.282907994118773,"predictedY":269.86576229513156,"errorPx":0.7943328576002802,"errorM":55.21811876980041},{"id":"S01","name":"Holosiyiv southern tip","lon":30.5926614,"lat":50.2132422,"x":370,"y":630.5,"role":"fit","sourceLine":4354,"predictedX":368.68265003447664,"predictedY":630.6634656232577,"errorPx":1.327453178704031,"errorM":92.6982337532148},{"id":"S02","name":"Holosiyiv southeast corner","lon":30.6435516,"lat":50.2260905,"x":419.5,"y":613,"role":"check","sourceLine":4352,"predictedX":421.3344753950481,"predictedY":611.7106235388585,"errorPx":2.2422737641917685,"errorM":156.06661886628856},{"id":"S03","name":"Holosiyiv east notch right corner","lon":30.6410412,"lat":50.2802193,"x":423.5,"y":524,"role":"fit","sourceLine":4294,"predictedX":421.62403856240513,"predictedY":524.7241458676554,"errorPx":2.010875071451562,"errorM":140.08218298809544},{"id":"S04","name":"Holosiyiv east notch left corner","lon":30.610567,"lat":50.280733,"x":390.5,"y":526,"role":"check","sourceLine":4302,"predictedX":390.5276065997923,"predictedY":522.8963021853459,"errorPx":3.1038205890548225,"errorM":214.93120247377857},{"id":"S05","name":"Holosiyiv southwest step","lon":30.552983,"lat":50.25885,"x":328.5,"y":555,"role":"check","sourceLine":4379,"predictedX":330.56308383688037,"predictedY":556.1340293956187,"errorPx":2.3542169798309214,"errorM":164.07047188707006},{"id":"S06","name":"Holosiyiv western step","lon":30.5275211,"lat":50.2906689,"x":303.5,"y":505,"role":"fit","sourceLine":4416,"predictedX":306.2360326265627,"predictedY":504.2106409620993,"errorPx":2.8476239611878214,"errorM":198.42521579796605},{"id":"S07","name":"Holosiyiv river bend east","lon":30.6473244,"lat":50.2961274,"x":426.5,"y":490,"role":"check","sourceLine":4288,"predictedX":428.87972527166175,"predictedY":499.39049447397974,"errorPx":9.687336002969532,"errorM":671.2792358540188},{"id":"C01","name":"Podil northwest corner","lon":30.3620505,"lat":50.51575,"x":147.5,"y":140,"role":"fit","sourceLine":1897,"predictedX":149.1051275905133,"predictedY":137.39602190445856,"errorPx":3.058943690865624,"errorM":211.8957744646153},{"id":"C02","name":"Podil northeast corner","lon":30.4467267,"lat":50.5266351,"x":240,"y":120.5,"role":"fit","sourceLine":1993,"predictedX":236.15933746322116,"predictedY":122.70720944767196,"errorPx":4.429724852325345,"errorM":307.13270908103794},{"id":"C03","name":"Podil east bend","lon":30.4517766,"lat":50.5004681,"x":238.5,"y":165,"role":"check","sourceLine":2041,"predictedX":239.93741666056957,"predictedY":164.8845791213717,"errorPx":1.4420432154780578,"errorM":100.11473824421331},{"id":"C04","name":"Podil southwest bend","lon":30.3651116,"lat":50.4987011,"x":150.5,"y":169,"role":"check","sourceLine":1886,"predictedX":151.33270100640104,"predictedY":164.86880863079742,"errorPx":4.214277292138619,"errorM":291.82583396145145},{"id":"C05","name":"Obolon Podil Dnipro junction","lon":30.5422695,"lat":50.483758,"x":329.5,"y":194,"role":"fit","sourceLine":2223,"predictedX":331.47755495087875,"predictedY":194.69135313721296,"errorPx":2.094920701143428,"errorM":145.49241626521396},{"id":"C06","name":"Obolon Desna Dnipro junction","lon":30.5367007,"lat":50.4909308,"x":324.5,"y":183,"role":"check","sourceLine":3860,"predictedX":326.1682219262551,"predictedY":182.99211101860283,"errorPx":1.6682405795525443,"errorM":115.8504936119557},{"id":"C07","name":"Podil Svyatoshyn Shevchenko junction","lon":30.3960649,"lat":50.4866429,"x":198.5,"y":205,"role":"check","sourceLine":5174,"predictedX":182.3098616265657,"predictedY":185.2471292471081,"errorPx":25.54009560536927,"errorM":1771.5062290964158},{"id":"C08","name":"Svyatoshyn Solomyansk Shevchenko junction","lon":30.3960645,"lat":50.4580079,"x":202.5,"y":216,"role":"check","sourceLine":5222,"predictedX":180.79993134015353,"predictedY":231.2206383117052,"errorPx":26.505863699525026,"errorM":1839.0080026204387},{"id":"C09","name":"Pechersk Holosiyiv river junction","lon":30.5902578,"lat":50.4172197,"x":374.5,"y":305,"role":"check","sourceLine":4258,"predictedX":376.9807081622124,"predictedY":303.09825997779035,"errorPx":3.1257843972579478,"errorM":216.96495212416588},{"id":"E01","name":"Dnipro Darnytsya eastern boundary start","lon":30.7415836,"lat":50.4687051,"x":544,"y":225,"role":"check","sourceLine":549,"predictedX":534.2449016549067,"predictedY":225.41948170335,"errorPx":9.764113304437197,"errorM":678.3549720928341},{"id":"W02","name":"Obolon Svyatoshyn northwest start","lon":30.3030347,"lat":50.5476842,"x":81.5,"y":78,"role":"check","sourceLine":1615,"predictedX":90.51532337184386,"predictedY":84.18304908432984,"errorPx":10.9318869129783,"errorM":758.0971519599655}],"hull":[[30.2363911,50.4306638],[30.5926614,50.2132422],[30.6435516,50.2260905],[30.8234573,50.537267],[30.4631088,50.5843452],[30.3709837,50.5864363],[30.3030347,50.5476842]],"version":"kyiv-affine-experiment-1"};
+const GEO_VERSION='kyiv-affine-experiment-1';
+const geoPolygons=DISTRICTS.map(d=>({id:d.id,name:d.name,points:Array.from(d.path.matchAll(/[ML](-?[\d.]+),(-?[\d.]+)/g),m=>[+m[1],+m[2]])}));
+function geoToImage(lat,lon){
+ const a=GEO_CALIBRATION.coefficients,dx=lon-GEO_CALIBRATION.origin[0],dy=lat-GEO_CALIBRATION.origin[1];
+ return {x:dx*a[0][0]+dy*a[1][0]+a[2][0],y:dx*a[0][1]+dy*a[1][1]+a[2][1]};
+}
+function geoInside(x,y,points){
+ let inside=false;
+ for(let i=0,j=points.length-1;i<points.length;j=i++){
+  const a=points[j],b=points[i],dx=b[0]-a[0],dy=b[1]-a[1];
+  const t=Math.max(0,Math.min(1,((x-a[0])*dx+(y-a[1])*dy)/(dx*dx+dy*dy||1)));
+  if(Math.hypot(x-a[0]-t*dx,y-a[1]-t*dy)<1e-7)return true;
+  if((b[1]>y)!==(a[1]>y)&&x<(a[0]-b[0])*(y-b[1])/(a[1]-b[1])+b[0])inside=!inside;
+ }
+ return inside;
+}
+function geoProject(point){
+ const image=geoToImage(point.lat,point.lon),{w,h}=FORMATS[state.format];let size,mapY;
+ if(!state.heading){size=Math.min(w-56,h-70);mapY=(h-size)/2}
+ else if(state.format==='story'){size=1010;mapY=435}
+ else if(state.format==='square'){size=795;mapY=175}
+ else{size=985;mapY=245}
+ return {x:(w-size)/2+image.x*size/661,y:mapY+image.y*size/661};
+}
+function geoAssess(point,id){
+ if(!point||!Number.isFinite(point.lat)||!Number.isFinite(point.lon)||Math.abs(point.lat)>90||Math.abs(point.lon)>180)return {ok:false,error:'Zadej platnou zem\u011bpisnou \u0161\u00ed\u0159ku a d\u00e9lku.'};
+ const image=geoToImage(point.lat,point.lon);
+ if(image.x<0||image.x>661||image.y<0||image.y>661){
+  const swapped=geoToImage(point.lon,point.lat);
+  return {ok:false,error:swapped.x>=0&&swapped.x<=661&&swapped.y>=0&&swapped.y<=661?'Sou\u0159adnice vypadaj\u00ed obr\u00e1cen\u011b. Zadej nejd\u0159\u00edv \u0161\u00ed\u0159ku (50\u2026), pak d\u00e9lku (30\u2026).':'Sou\u0159adnice vych\u00e1z\u00ed mimo prostor t\u00e9to p\u0159edlohy. Bod nebyl p\u0159id\u00e1n ani posunut.'};
+ }
+ const districts=geoPolygons.filter(p=>geoInside(image.x,image.y,p.points)),warnings=[];
+ if(!districts.length)warnings.push('Bod vych\u00e1z\u00ed mimo obrys \u010dtvrt\u00ed v kresb\u011b. To nen\u00ed ov\u011b\u0159en\u00ed skute\u010dn\u00e9 hranice m\u011bsta.');
+ else if(id&&!districts.some(d=>d.id===id))warnings.push('Podle kresby bod vych\u00e1z\u00ed do '+districts.map(d=>d.name).join(' / ')+', nikoli do vybran\u00e9 \u010dtvrti. V\u00fdb\u011br ani bod se automaticky nem\u011bn\u00ed.');
+ if(!geoInside(point.lon,point.lat,GEO_CALIBRATION.hull))warnings.push('Mimo oblast obklopenou kontroln\u00edmi body: zde jde o extrapolaci, nikoli ov\u011b\u0159enou polohu.');
+ return {ok:true,image,districts,warnings};
+}
+
+function cleanGps(input,points=[]){
+ const out={};if(input&&typeof input==='object')for(const d of allNoteEntries(points)){
+  const p=input[d.id];if(p&&typeof p.lat==='number'&&typeof p.lon==='number'&&geoAssess(p,d.district).ok)out[d.id]={lat:p.lat,lon:p.lon};
+ }return out;
+}
+function parseGps(value){
+ const source=String(value).trim();if(!source)return {ok:false,error:'Nejd\u0159\u00edv vlo\u017e sou\u0159adnice.'};
+ let text=source.replace(/^geo:/i,'').trim(),parts;
+ if(text.includes(';')){
+  parts=text.split(';').map(s=>s.trim());
+  if(parts.length===2)parts=parts.map(s=>s.replace(',','.'));
+ }else if(text.includes(',')){parts=text.split(',').map(s=>s.trim())}
+ else{parts=text.split(/\s+/)}
+ if(parts.length!==2||!parts.every(s=>/^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/.test(s)))return {ok:false,error:'Pou\u017eij nap\u0159. 50.4501, 30.5234. Desetinn\u00e9 \u010d\u00e1rky odd\u011bl st\u0159edn\u00edkem: 50,4501; 30,5234.'};
+ const point={lat:Number(parts[0]),lon:Number(parts[1])},assessment=geoAssess(point);
+ return assessment.ok?{ok:true,point}:assessment;
+}
+function gpsInputText(p){return p?String(p.lat)+', '+String(p.lon):''}
+function gpsMapURL(p){return 'https://www.openstreetmap.org/?mlat='+encodeURIComponent(String(p.lat))+'&mlon='+encodeURIComponent(String(p.lon))+'#map=17/'+encodeURIComponent(String(p.lat))+'/'+encodeURIComponent(String(p.lon))}
+function gpsEditorMarkup(d){return `<details class="gps-editor" data-gps-editor="${d.id}"><summary>Sou\u0159adnice <span class="optional">\u00b7 voliteln\u00e9</span><span class="gps-linked" id="gps-linked-${d.id}" hidden>p\u0159ipojeno</span></summary><p class="gps-help">Bod v t\u00e9to kresb\u011b je pouze orienta\u010dn\u00ed. Sou\u0159adnice se ulo\u017e\u00ed beze zm\u011bny; ok\u00e9nko lze d\u00e1l p\u0159etahovat.</p><label for="gps-${d.id}">\u0160\u00ed\u0159ka, d\u00e9lka \u00b7 WGS 84</label><input id="gps-${d.id}" class="gps-input" data-gps-input="${d.id}" type="text" inputmode="text" maxlength="120" placeholder="50.4501, 30.5234" autocomplete="off" spellcheck="false" aria-describedby="gps-status-${d.id}"><div class="gps-actions"><button type="button" class="secondary-btn" data-gps-apply="${d.id}">P\u0159ipojit bod</button><button type="button" class="secondary-btn" data-gps-remove="${d.id}" hidden>Odpojit bod</button></div><p class="gps-status" id="gps-status-${d.id}" role="status" aria-live="polite">Sou\u0159adnice jsou voliteln\u00e9.</p><button type="button" class="gps-revert" data-gps-revert="${d.id}" hidden>Zru\u0161it rozepsanou zm\u011bnu</button><a class="gps-link" id="gps-link-${d.id}" target="_blank" rel="noopener noreferrer" hidden>Ov\u011b\u0159it ulo\u017een\u00e9 sou\u0159adnice v OpenStreetMap \u2197</a></details>`}
+function resetGpsDrafts(){document.querySelectorAll('[data-gps-input]').forEach(input=>{delete input.dataset.dirty;input.removeAttribute('aria-invalid')})}
+function syncGpsEditors(){
+ for(const d of allNoteEntries()){
+  const input=$('#gps-'+d.id);if(!input)continue;
+  const point=state.gps[d.id],status=$('#gps-status-'+d.id),link=$('#gps-link-'+d.id),linked=$('#gps-linked-'+d.id);
+  linked.hidden=!point;document.querySelector('[data-gps-remove="'+d.id+'"]').hidden=!point;
+  document.querySelector('[data-gps-revert="'+d.id+'"]').hidden=!input.dataset.dirty;
+  const apply=document.querySelector('[data-gps-apply="'+d.id+'"]');apply.textContent=point?'Aktualizovat bod':'P\u0159ipojit bod';
+  link.hidden=!point;if(point)link.href=gpsMapURL(point);else link.removeAttribute('href');
+  if(input.dataset.dirty)continue;
+  input.value=gpsInputText(point);status.classList.remove('is-error');
+  if(point){
+   const result=geoAssess(point,d.district);
+   status.textContent='Ulo\u017eeno: '+gpsInputText(point)+'. '+(result.warnings.length?result.warnings.join(' '):'Poloha v kresb\u011b je orienta\u010dn\u00ed, ne zam\u011b\u0159en\u00ed konkr\u00e9tn\u00edho domu.');
+   status.classList.toggle('is-warning',!!result.warnings.length);
+  }else{status.textContent='Bez sou\u0159adnic se popisek spoj\u00ed s plochou \u010dtvrti jako dosud.';status.classList.remove('is-warning')}
+ }
+}
+function commitGps(id){
+ const input=$('#gps-'+id),status=$('#gps-status-'+id);if(!input||!hasNoteId(id))return;
+ const parsed=parseGps(input.value),result=parsed.ok?geoAssess(parsed.point,districtFor(id)):parsed;
+ if(!result.ok){input.setAttribute('aria-invalid','true');status.textContent=result.error+(state.gps[id]?' P\u016fvodn\u00ed ulo\u017een\u00fd bod z\u016fst\u00e1v\u00e1 beze zm\u011bny.':'');status.classList.add('is-error');status.classList.remove('is-warning');return}
+ snapshot();state.gps[id]=parsed.point;for(const f of Object.keys(FORMATS))if(state.anchorPositions[f])delete state.anchorPositions[f][id];delete input.dataset.dirty;input.removeAttribute('aria-invalid');sync();
+ notify('Sou\u0159adnice p\u0159ipojeny. Bod v kresb\u011b je orienta\u010dn\u00ed.');
+}
+function initializeGpsEditors(){
+ const fields=$('#note-fields');
+ for(const d of DISTRICTS)$('#note-field-'+d.id).insertAdjacentHTML('beforeend',gpsEditorMarkup(d));
+ fields.addEventListener('input',e=>{const input=e.target;if(!input.matches('[data-gps-input]'))return;
+  $('#png-ready').hidden=true;input.dataset.dirty='true';input.removeAttribute('aria-invalid');const id=input.dataset.gpsInput,status=$('#gps-status-'+id);
+  status.textContent='Rozepsan\u00e1 zm\u011bna. Potvr\u010f tla\u010d\u00edtkem '+(state.gps[id]?'Aktualizovat bod. Ulo\u017een\u00fd bod se zat\u00edm nem\u011bn\u00ed.':'P\u0159ipojit bod.');
+  status.classList.remove('is-error','is-warning');document.querySelector('[data-gps-revert="'+id+'"]').hidden=false;
+ });
+ fields.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-gps-input]')){e.preventDefault();commitGps(e.target.dataset.gpsInput)}});
+ fields.addEventListener('click',e=>{
+  const apply=e.target.closest('[data-gps-apply]');if(apply){commitGps(apply.dataset.gpsApply);return}
+  const remove=e.target.closest('[data-gps-remove]');if(remove){const id=remove.dataset.gpsRemove;snapshot();delete state.gps[id];const input=$('#gps-'+id);delete input.dataset.dirty;input.removeAttribute('aria-invalid');sync();notify('Bod byl odpojen. Text popisku z\u016fstal zachov\u00e1n.');return}
+  const revert=e.target.closest('[data-gps-revert]');if(revert){const input=$('#gps-'+revert.dataset.gpsRevert);delete input.dataset.dirty;input.removeAttribute('aria-invalid');syncGpsEditors()}
+ });
+
+ for(const id of ['export-png','export-png-transparent','export-svg','export-html'])$('#'+id).addEventListener('click',e=>{
+  if(!prepareExport()){e.preventDefault();e.stopImmediatePropagation()}
+ },true);
+}
+function gpsWarningLines(point,id){
+ const result=geoAssess(point,id),lines=[];
+ if(!result.districts.length)lines.push('Bod mimo obrys kresby');
+ else if(!result.districts.some(d=>d.id===id))lines.push('Neshoda s \u010dtvrt\u00ed v kresb\u011b');
+ if(!geoInside(point.lon,point.lat,GEO_CALIBRATION.hull))lines.push('Mimo kontroln\u00ed oblast');
+ return lines;
+}
+function gpsCardFooter(box,p){
+ if(!box.gps)return '';
+ const base=53+box.lines.length*30;
+ return `<path d="M15 ${base-4}H${box.w-15}" stroke="${p.rule}" stroke-width="1"/><text x="15" y="${base+15}" fill="${p.fg}" font-size="14" font-weight="700" letter-spacing=".6" pointer-events="none">GPS · ORIENTAČNÍ POLOHA</text><text x="15" y="${base+35}" fill="${p.muted}" font-size="14" pointer-events="none">${box.gps.lat.toFixed(6)}, ${box.gps.lon.toFixed(6)}</text>`;
+}
+function gpsMarkersMarkup(boxes,p){return boxes.filter(box=>box.gps).map(box=>{
+ const a=box.anchor,x=Math.round(a.x*10)/10,y=Math.round(a.y*10)/10;
+ return `<g data-gps-marker="${box.id}" data-lat="${box.gps.lat}" data-lon="${box.gps.lon}" pointer-events="none"><title>GPS ${esc(gpsInputText(box.gps))}; poloha v kresb\u011b je orienta\u010dn\u00ed</title><circle cx="${x}" cy="${y}" r="8" fill="#ffffff"/></g>`;
+}).join('')}
+function gpsMetadata(boxes){
+ const points=boxes.filter(b=>b.gps).map(b=>({id:b.id,district:b.district,lat:b.gps.lat,lon:b.gps.lon}));
+ return points.length?`<metadata id="gps-reference">${esc(JSON.stringify({model:GEO_VERSION,placement:'approximate',reference:GEO_CALIBRATION.reference,fitPoints:9,heldOutChecks:13,checkMedianM:217,checkMaxM:1839,points}))}</metadata>`:'';
+}
+
+// Optional district captions. Geometry and all existing map settings are unchanged.
+const NOTE_LIMIT=160;
+const noteMeasure=document.createElement('canvas').getContext('2d');
+const noteGeometryCache=new Map();
+let noteLayoutKey='',noteLayoutValue=[];
+let noteEditSession=null,noteDrag=null;
+function cleanNotes(input,allowedIds=ids){
+ const out={};
+ if(input&&typeof input==='object')for(const id of allowedIds){
+  if(typeof input[id]==='string')out[id]=xmlText(input[id]).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'').slice(0,NOTE_LIMIT);
+ }
+ return out;
+}
+function cleanNotePositions(input,allowedIds=ids){
+ const out={};
+ if(input&&typeof input==='object')for(const f of Object.keys(FORMATS)){
+  const source=input[f];if(!source||typeof source!=='object')continue;
+  for(const id of allowedIds){const pt=source[id];
+   if(pt&&Number.isFinite(pt.x)&&Number.isFinite(pt.y)){
+    if(!out[f])out[f]={};out[f][id]={x:Math.max(0,Math.min(FORMATS[f].w,pt.x)),y:Math.max(0,Math.min(FORMATS[f].h,pt.y))};
+   }
+  }
+ }
+ return out;
+}
+
+function cleanAnchorPositions(input,allowedIds=ids){
+ const out={};
+ if(input&&typeof input==='object')for(const f of Object.keys(FORMATS)){
+  const source=input[f];if(!source||typeof source!=='object')continue;
+  for(const id of allowedIds){const pt=source[id];
+   if(pt&&Number.isFinite(pt.x)&&Number.isFinite(pt.y)){
+    if(!out[f])out[f]={};out[f][id]={x:Math.max(0,Math.min(FORMATS[f].w,pt.x)),y:Math.max(0,Math.min(FORMATS[f].h,pt.y))};
+   }
+  }
+ }
+ return out;
+}
+function noteGeometry(){
+ const {w,h}=FORMATS[state.format];
+ const key=[state.format,state.heading,state.labels,!!state.date].join('|');
+ if(noteGeometryCache.has(key))return noteGeometryCache.get(key);
+ let size,y,header,footer;
+ if(!state.heading){size=Math.min(w-56,h-70);y=(h-size)/2;header=0;footer=h-60}
+ else if(state.format==='story'){size=1010;y=435;header=245;footer=1600}
+ else if(state.format==='square'){size=795;y=175;header=78;footer=1008}
+ else{size=985;y=245;header=104;footer=1267}
+ const x=(w-size)/2,scale=size/661;
+ const bounds={left:38,right:w-38,top:state.heading?header+(state.format==='square'?(state.date?113:69):(state.date?129:101)):28,bottom:state.heading?footer-42:h-28};
+ // A small raster mask is used only to place captions in the existing empty space.
+ const step=8,cols=Math.ceil(w/step),rows=Math.ceil(h/step),mask=document.createElement('canvas');
+ mask.width=cols;mask.height=rows;
+ const ctx=mask.getContext('2d',{willReadFrequently:true});
+ const prefix=new Uint32Array((cols+1)*(rows+1));
+ if(ctx){
+  ctx.scale(1/step,1/step);ctx.translate(x,y);ctx.scale(scale,scale);ctx.fillStyle='#fff';
+  for(const d of DISTRICTS)ctx.fill(new Path2D(d.path));
+  const rgba=ctx.getImageData(0,0,cols,rows).data;
+  for(let row=0;row<rows;row++){let sum=0;for(let col=0;col<cols;col++){
+   sum+=rgba[(row*cols+col)*4+3]>32?1:0;
+   prefix[(row+1)*(cols+1)+col+1]=prefix[row*(cols+1)+col+1]+sum;
+  }}
+ }
+ const occupiedArea=box=>{
+  const x1=Math.max(0,Math.floor(box.x/step)),y1=Math.max(0,Math.floor(box.y/step));
+  const x2=Math.min(cols,Math.ceil((box.x+box.w)/step)),y2=Math.min(rows,Math.ceil((box.y+box.h)/step)),stride=cols+1;
+  return (prefix[y2*stride+x2]-prefix[y1*stride+x2]-prefix[y2*stride+x1]+prefix[y1*stride+x1])*step*step;
+ };
+ const labels=state.labels?DISTRICTS.map(d=>{
+  const lw=(d.font*.65*d.label.length+10)*scale,lh=(d.font*1.5+(d.rotate?Math.sin(d.rotate*Math.PI/180)*lw/scale:0))*scale;
+  return {x:x+d.x*scale-lw/2,y:y+d.y*scale-lh/2,w:lw,h:lh};
+ }):[];
+ const anchors={},attachmentPoints={};
+ for(const d of DISTRICTS){
+  // Keep the small connector dot inside its district, just below its name.
+  const points=Array.from(d.path.matchAll(/[ML](-?[\d.]+),(-?[\d.]+)/g),m=>[+m[1],+m[2]]);
+  const inside=(px,py)=>{let yes=false;for(let i=0,j=points.length-1;i<points.length;j=i++){
+   const a=points[i],b=points[j];if((a[1]>py)!==(b[1]>py)&&px<(b[0]-a[0])*(py-a[1])/(b[1]-a[1])+a[0])yes=!yes;
+  }return yes};
+  let ax=d.x,ay=d.y;
+  for(const dy of [d.font+6,-d.font-6,d.font*.8,-d.font*.8])if(inside(ax,d.y+dy)){ay=d.y+dy;break}
+  anchors[d.id]={x:x+ax*scale,y:y+ay*scale};
+  attachmentPoints[d.id]=[];
+  for(let i=0,j=points.length-1;i<points.length;j=i++){
+   const a=points[i],b=points[j],dx=b[0]-a[0],dy=b[1]-a[1],length=Math.hypot(dx,dy);if(length<4)continue;
+   const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;
+   for(const sign of [1,-1]){
+    const px=mx-sign*dy/length*4,py=my+sign*dx/length*4;
+    if(inside(px,py)){attachmentPoints[d.id].push({x:x+px*scale,y:y+py*scale});break}
+   }
+  }
+  if(!attachmentPoints[d.id].length)attachmentPoints[d.id].push(anchors[d.id]);
+ }
+ const mapRect={left:x,top:y,right:x+size,bottom:y+size};
+ const result={w,h,bounds,labels,anchors,attachmentPoints,occupiedArea,mapRect};
+ if(noteGeometryCache.size>16)noteGeometryCache.clear();noteGeometryCache.set(key,result);return result;
+}
+function noteLines(text,maxWidth){
+ const plain=text.trim().replace(/\s+/g,' '),lines=[];
+ if(noteMeasure)noteMeasure.font='24px Arial';
+ const width=s=>noteMeasure?noteMeasure.measureText(s).width:s.length*13.34;
+ let line='';
+ for(const word of plain.split(' ')){
+  if(!word)continue;
+  if(width(word)>maxWidth){
+   if(line){lines.push(line);line=''}
+   for(const ch of Array.from(word)){if(line&&width(line+ch)>maxWidth){lines.push(line);line=''}line+=ch}
+  }else if(!line||width(line+' '+word)<=maxWidth){line+=(line?' ':'')+word}
+  else{lines.push(line);line=word}
+ }
+ if(line)lines.push(line);return lines;
+}
+function boxOverlap(a,b,pad=0){return Math.max(0,Math.min(a.x+a.w,b.x+b.w+pad)-Math.max(a.x,b.x-pad))*Math.max(0,Math.min(a.y+a.h,b.y+b.h+pad)-Math.max(a.y,b.y-pad))}
+function noteInBounds(box,g){const b=g.bounds;return {...box,x:Math.max(b.left,Math.min(b.right-box.w,box.x)),y:Math.max(b.top,Math.min(b.bottom-box.h,box.y))}}
+function noteConnection(box){
+ const a=box.anchor;
+ const tx=Math.max(box.x+10,Math.min(box.x+box.w-10,a.x)),ty=Math.max(box.y+10,Math.min(box.y+box.h-10,a.y));
+ let end;
+ if(a.x<box.x)end={x:box.x,y:ty};else if(a.x>box.x+box.w)end={x:box.x+box.w,y:ty};
+ else if(a.y<box.y)end={x:tx,y:box.y};else end={x:tx,y:box.y+box.h};
+ return {a,b:end};
+}
+function lineHitsBox(a,b,box,pad=0){
+ let t0=0,t1=1;
+ const dx=b.x-a.x,dy=b.y-a.y;
+ const ps=[-dx,dx,-dy,dy],qs=[a.x-box.x+pad,box.x+box.w+pad-a.x,a.y-box.y+pad,box.y+box.h+pad-a.y];
+ for(let i=0;i<4;i++){
+  if(Math.abs(ps[i])<1e-8){if(qs[i]<0)return false}
+  else{const r=qs[i]/ps[i];if(ps[i]<0){if(r>t1)return false;t0=Math.max(t0,r)}else{if(r<t0)return false;t1=Math.min(t1,r)}}
+ }
+ return true;
+}
+function noteLayout(){
+ const active=activeNoteEntries();
+ if(!active.length)return [];
+ const key=JSON.stringify([state.format,state.heading,state.labels,!!state.date,active.map(d=>[d.id,d.district,d.label,state.notes[d.id],state.gps[d.id]]),state.notePositions[state.format],state.anchorPositions[state.format]]);
+ if(key===noteLayoutKey)return noteLayoutValue;
+ const g=noteGeometry(),b=g.bounds,manual=state.notePositions[state.format]||{};
+ const items=active.map(d=>{const gps=state.gps[d.id],text=(state.notes[d.id]||'').trim()||(gps?'M\u00edsto podle sou\u0159adnic':''),width=text.length>100?280:240,lines=noteLines(text,width-30),defaultAnchor=gps?geoProject(gps):g.anchors[d.district],manualAnchor=state.anchorPositions[state.format]?.[d.id];return {id:d.id,district:d.district,name:d.name,label:d.label,anchor:gps?defaultAnchor:(manualAnchor||defaultAnchor),defaultAnchor,anchorManual:!gps&&!!manualAnchor,w:width,h:53+lines.length*30+(gps?50:0),lines,...(gps?{gps}:{})}});
+ const placed=[],pending=[];
+ for(const item of items){if(manual[item.id])placed.push(noteInBounds({...item,...manual[item.id]},g));else pending.push(item)}
+ pending.sort((a,c)=>a.anchor.y-c.anchor.y||a.anchor.x-c.anchor.x);
+ for(const item of pending){
+  const xs=new Set([b.left,b.right-item.w,Math.max(b.left,Math.min(b.right-item.w,item.anchor.x-item.w-24)),Math.max(b.left,Math.min(b.right-item.w,item.anchor.x+24))]);
+  const ys=new Set([b.top,b.bottom-item.h,Math.max(b.top,Math.min(b.bottom-item.h,item.anchor.y-item.h/2))]);
+  for(let x=b.left;x<=b.right-item.w;x+=24)xs.add(x);
+  for(let y=b.top;y<=b.bottom-item.h;y+=24)ys.add(y);
+  let best=null,bestScore=Infinity;
+  for(const x of xs)for(const y of ys){
+   const box={...item,x,y},line=noteConnection(box);
+   let score=g.occupiedArea(box)*.34+Math.hypot(line.a.x-line.b.x,line.a.y-line.b.y)*.24;
+   if((item.anchor.x<g.w/2)!==(x+item.w/2<g.w/2))score+=320;
+   for(const label of g.labels)score+=boxOverlap(box,label,5)*6;
+   for(const other of placed){
+    score+=boxOverlap(box,other,12)*40;
+    if(lineHitsBox(line.a,line.b,other,4))score+=1100;
+    const oldLine=noteConnection(other);if(lineHitsBox(oldLine.a,oldLine.b,box,4))score+=1100;
+   }
+   for(const anchor of [...Object.values(g.anchors),...items.filter(it=>it.gps).map(it=>it.anchor)])if(anchor.x>x-6&&anchor.x<x+item.w+6&&anchor.y>y-6&&anchor.y<y+item.h+6)score+=7000;
+   if(score<bestScore){bestScore=score;best=box}
+  }
+  placed.push(best||noteInBounds({...item,x:b.left,y:b.top},g));
+ }
+ noteLayoutKey=key;noteLayoutValue=items.map(item=>placed.find(p=>p.id===item.id));return noteLayoutValue;
+}
+function noteLeader(box,boxes){
+ if(box.gps||box.anchorManual)return noteConnection(box);
+ const g=noteGeometry();let best=noteConnection(box),score=Infinity;
+ for(const pt of g.attachmentPoints[box.district]){
+  if(pt.x>=box.x&&pt.x<=box.x+box.w&&pt.y>=box.y&&pt.y<=box.y+box.h)continue;
+  const line=noteConnection({...box,anchor:pt});let cost=Math.hypot(line.a.x-line.b.x,line.a.y-line.b.y);
+  for(const label of g.labels)if(lineHitsBox(line.a,line.b,label,4))cost+=600;
+  for(const other of boxes)if(other.id!==box.id&&lineHitsBox(line.a,line.b,other,4))cost+=1000;
+  if(cost<score){score=cost;best=line}
+ }
+ return best;
+}
+function annotationMarkup(interactive=false){
+ const boxes=noteLayout();if(!boxes.length)return '';
+ const p=PALETTES[state.theme],round=n=>Math.round(n*10)/10;
+ const lines=boxes.map(box=>{const {a,b}=noteLeader(box,boxes);return `<g aria-hidden="true"><path d="M${round(a.x)} ${round(a.y)} L${round(b.x)} ${round(b.y)}" fill="none" stroke="#000000" stroke-width="7" opacity=".42" pointer-events="none"/><path d="M${round(a.x)} ${round(a.y)} L${round(b.x)} ${round(b.y)}" fill="none" stroke="#ffffff" stroke-width="4.4" stroke-linecap="round" opacity=".98" pointer-events="none"/>${interactive&&!box.gps?`<circle class="anchor-handle" data-anchor-handle="${box.id}" cx="${round(a.x)}" cy="${round(a.y)}" r="10.5" fill="#ffffff" stroke="#000000" stroke-opacity=".48" stroke-width="3" tabindex="0" role="button" aria-label="Přesunout koncový bod pro ${esc(box.name)}"/>`:''}<circle cx="${round(a.x)}" cy="${round(a.y)}" r="4.4" fill="#ffffff" pointer-events="none"/></g>`}).join('');
+ const cards=boxes.map(box=>`<g class="district-annotation" data-annotation="${box.id}" transform="translate(${round(box.x)} ${round(box.y)})"${interactive?` tabindex="0" role="group" aria-label="${esc(box.name+': '+(state.notes[box.id]||'GPS'))}. Popisek lze přetáhnout nebo posunout šipkami."`:''}><title>${esc(box.name+': '+(state.notes[box.id]||'GPS'))}${interactive?' — přetáhni pro přesunutí':''}</title><rect class="annotation-card" width="${box.w}" height="${box.h}" rx="8" fill="${p.bg}" stroke="${p.rule}" stroke-width="1.5"/><rect x="14" y="17" width="6" height="6" rx="1" fill="${RED}"/><text x="29" y="25" fill="${p.fg}" font-size="18" font-weight="700" letter-spacing=".5" pointer-events="none">${esc(box.label)}</text><text fill="${p.fg}" font-size="24" font-weight="400" pointer-events="none">${box.lines.map((line,i)=>`<tspan x="15" y="${57+i*30}">${esc(line)}</tspan>`).join('')}</text>${gpsCardFooter(box,p)}</g>`).join('');
+ return gpsMetadata(boxes)+lines+cards+gpsMarkersMarkup(boxes,p);
+}
+
+function syncNoteEditors(){
+ syncExtraPointEditors();$('#district-notes').hidden=!state.selected.length;
+ let count=0;
+ for(const d of allNoteEntries()){
+  const on=state.selected.includes(d.district),input=$('#note-'+d.id),value=state.notes[d.id]||'';
+  $('#note-field-'+d.id).hidden=!on;if(input.value!==value)input.value=value;
+  $('#note-count-'+d.id).textContent=value.length+' / '+NOTE_LIMIT;
+  if(on&&(value.trim()||state.gps[d.id]))count++;
+ }
+ $('#notes-count').textContent=count?String(count):'voliteln\u00e9';
+ $('#reset-note-positions').hidden=!activeNoteEntries().some(d=>state.notePositions[state.format]?.[d.id]||state.anchorPositions[state.format]?.[d.id]);
+ syncGpsEditors();
+}
+function refreshAnnotations(){
+ const layer=$('#district-annotations');if(layer)layer.innerHTML=annotationMarkup(true);
+ const boxes=noteLayout();let overlap=false;
+ for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++)if(boxOverlap(boxes[i],boxes[j])>1)overlap=true;
+ const pointCovered=boxes.some(b=>b.gps&&boxes.some(other=>b.anchor.x>other.x&&b.anchor.x<other.x+other.w&&b.anchor.y>other.y&&b.anchor.y<other.y+other.h));
+ $('#notes-warning').hidden=!(overlap||pointCovered);
+ $('#notes-warning').textContent=pointCovered?'Popisek p\u0159ekr\u00fdv\u00e1 bod GPS. Posu\u0148 ok\u00e9nko, bod z\u016fst\u00e1v\u00e1 pevn\u00fd.':'N\u011bkter\u00e9 popisky se p\u0159ekr\u00fdvaj\u00ed. P\u0159et\u00e1hni je v map\u011b nebo zkra\u0165 jejich text.';
+}
+function initializeNoteEditors(){
+ $('#note-fields').innerHTML=DISTRICTS.map(d=>`<div class="note-field" id="note-field-${d.id}" hidden><div class="note-label"><label for="note-${d.id}">${esc(d.name)}</label><span id="note-count-${d.id}" class="optional">0 / ${NOTE_LIMIT}</span></div><textarea id="note-${d.id}" data-note-input="${d.id}" maxlength="${NOTE_LIMIT}" rows="2" placeholder="Napi\u0161 vlastn\u00ed popisek\u2026" aria-describedby="notes-help" autocomplete="off"></textarea></div>`).join('');
+ $('#note-fields').addEventListener('focusin',e=>{if(e.target.matches('[data-note-input]'))noteEditSession={id:e.target.dataset.noteInput,saved:false}});
+ $('#note-fields').addEventListener('focusout',()=>{noteEditSession=null});
+ $('#note-fields').addEventListener('input',e=>{
+  const input=e.target;if(!input.matches('[data-note-input]'))return;
+  const id=input.dataset.noteInput;if(!hasNoteId(id))return;
+  if(!noteEditSession||noteEditSession.id!==id)noteEditSession={id,saved:false};
+  if(!noteEditSession.saved){snapshot();noteEditSession.saved=true}
+  state.notes[id]=xmlText(input.value).slice(0,NOTE_LIMIT);sync();
+ });
+ $('#reset-note-positions').addEventListener('click',()=>{snapshot();delete state.notePositions[state.format];delete state.anchorPositions[state.format];sync();notify('Popisky i koncové body byly vráceny na automatické rozmístění.')});
+ const preview=$('#preview');
+ const svgPoint=e=>{const svg=preview.querySelector('svg'),m=svg?.getScreenCTM();if(!svg||!m)return null;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;return pt.matrixTransform(m.inverse())};
+ const freezePositions=()=>{if(!state.notePositions[state.format])state.notePositions[state.format]={};for(const box of noteLayout())state.notePositions[state.format][box.id]={x:box.x,y:box.y}};
+ const mapClamped=pt=>{const r=noteGeometry().mapRect;return {x:Math.max(r.left,Math.min(r.right,pt.x)),y:Math.max(r.top,Math.min(r.bottom,pt.y))}};
+ const ensureAnchorStore=()=>{if(!state.anchorPositions[state.format])state.anchorPositions[state.format]={}};
+ let anchorDrag=null;
+ preview.addEventListener('pointerdown',e=>{
+  const handle=e.target.closest('[data-anchor-handle]');
+  if(handle&&e.button===0){
+   const pt=svgPoint(e);if(!pt)return;
+   anchorDrag={id:handle.dataset.anchorHandle,pointer:e.pointerId,moving:false};
+   preview.setPointerCapture(e.pointerId);e.preventDefault();return;
+  }
+  const target=e.target.closest('[data-annotation]');if(!target||e.button!==0)return;
+  const pt=svgPoint(e),box=noteLayout().find(b=>b.id===target.dataset.annotation);if(!pt||!box)return;
+  noteDrag={id:box.id,pointer:e.pointerId,start:pt,box:{...box},moving:false};
+  preview.setPointerCapture(e.pointerId);e.preventDefault();
+ });
+ preview.addEventListener('pointermove',e=>{
+  if(anchorDrag&&e.pointerId===anchorDrag.pointer){
+   const pt=svgPoint(e);if(!pt)return;
+   if(!anchorDrag.moving){snapshot();anchorDrag.moving=true;preview.classList.add('moving-anchor')}
+   ensureAnchorStore();state.anchorPositions[state.format][anchorDrag.id]=mapClamped(pt);refreshAnnotations();e.preventDefault();return;
+  }
+  if(!noteDrag||e.pointerId!==noteDrag.pointer)return;
+  const pt=svgPoint(e);if(!pt)return;
+  const dx=pt.x-noteDrag.start.x,dy=pt.y-noteDrag.start.y;
+  if(!noteDrag.moving&&Math.hypot(dx,dy)<4)return;
+  if(!noteDrag.moving){snapshot();freezePositions();noteDrag.moving=true;preview.classList.add('moving-note')}
+  const box=noteInBounds({...noteDrag.box,x:noteDrag.box.x+dx,y:noteDrag.box.y+dy},noteGeometry());
+  state.notePositions[state.format][noteDrag.id]={x:box.x,y:box.y};refreshAnnotations();e.preventDefault();
+ },{passive:false});
+ const endDrag=e=>{
+  if(anchorDrag&&e.pointerId===anchorDrag.pointer){anchorDrag=null;preview.classList.remove('moving-anchor');if(preview.hasPointerCapture(e.pointerId))preview.releasePointerCapture(e.pointerId);sync();return}
+  if(!noteDrag||e.pointerId!==noteDrag.pointer)return;noteDrag=null;preview.classList.remove('moving-note');if(preview.hasPointerCapture(e.pointerId))preview.releasePointerCapture(e.pointerId);sync()
+ };
+ preview.addEventListener('pointerup',endDrag);preview.addEventListener('pointercancel',endDrag);
+ preview.addEventListener('lostpointercapture',e=>{if(anchorDrag&&e.pointerId===anchorDrag.pointer){anchorDrag=null;preview.classList.remove('moving-anchor');sync()}if(noteDrag&&e.pointerId===noteDrag.pointer){noteDrag=null;preview.classList.remove('moving-note');sync()}});
+ preview.addEventListener('keydown',e=>{
+  const handle=e.target.closest('[data-anchor-handle]');
+  if(handle&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){
+   e.preventDefault();if(!e.repeat)snapshot();ensureAnchorStore();const existing=state.anchorPositions[state.format]?.[handle.dataset.anchorHandle]||noteLayout().find(b=>b.id===handle.dataset.anchorHandle)?.anchor;if(!existing)return;const step=e.shiftKey?24:8;const next=mapClamped({x:existing.x+(e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0),y:existing.y+(e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0)});state.anchorPositions[state.format][handle.dataset.anchorHandle]=next;sync();preview.querySelector('[data-anchor-handle="'+handle.dataset.anchorHandle+'"]')?.focus({preventScroll:true});return;
+  }
+  const target=e.target.closest('[data-annotation]');if(!target||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;
+  const id=target.dataset.annotation,box=noteLayout().find(b=>b.id===id);if(!box)return;e.preventDefault();
+  if(!e.repeat)snapshot();freezePositions();const step=e.shiftKey?24:8;
+  const next=noteInBounds({...box,x:box.x+(e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0),y:box.y+(e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0)},noteGeometry());
+  state.notePositions[state.format][id]={x:next.x,y:next.y};sync();preview.querySelector('[data-annotation="'+id+'"]')?.focus({preventScroll:true});
+ });
+}
+
+function cleanState(input){
+ const src=input&&typeof input==='object'?input:{};
+ const points=cleanPoints(src.points),allowedIds=new Set([...ids,...points.map(p=>p.id)]);
+ return {points,selected:[...new Set(Array.isArray(src.selected)?src.selected.filter(x=>ids.has(x)):[])],notes:cleanNotes(src.notes,allowedIds),notePositions:cleanNotePositions(src.notePositions,allowedIds),anchorPositions:cleanAnchorPositions(src.anchorPositions,allowedIds),gps:cleanGps(src.gps,points),title:typeof src.title==='string'?src.title.slice(0,30):DEFAULT.title,subtitle:typeof src.subtitle==='string'?src.subtitle.slice(0,60):DEFAULT.subtitle,date:typeof src.date==='string'?src.date.slice(0,60):'',theme:src.theme==='light'?'light':'dark',labels:typeof src.labels==='boolean'?src.labels:true,heading:typeof src.heading==='boolean'?src.heading:true,format:Object.hasOwn(FORMATS,src.format)?src.format:'post'};
+}
+let state=cleanState(DEFAULT),embedded={};
+try{embedded=JSON.parse($('#embedded-state').textContent||'{}')}catch(e){}
+if(Object.keys(embedded).length){state=cleanState(embedded)}else{try{const old=localStorage.getItem(STORAGE_KEY)||localStorage.getItem(PREVIOUS_STORAGE_KEY)||localStorage.getItem(LEGACY_STORAGE_KEY);if(old)state=cleanState(JSON.parse(old))}catch(e){}}
+let historyStack=[];
+let toastTimer;
+function notify(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800)}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){$('#save-note').textContent='Tento prohl\u00ed\u017ee\u010d neumo\u017e\u0148uje automatick\u00e9 ulo\u017een\u00ed. Uchovej si stav tla\u010d\u00edtkem HTML s v\u00fdb\u011brem.'}}
+function fontFit(text,maxWidth,maxSize,minSize){return Math.max(minSize,Math.min(maxSize,maxWidth/Math.max(1,text.length*.63)))}
+function svgMarkup(interactive=false,options={}){
+ const p=PALETTES[state.theme],{w,h}=FORMATS[state.format],transparent=!!options.transparent;
+ const isStory=state.format==='story',isSquare=state.format==='square';
+ let mapSize,mapY,headerY,footerY;
+ if(!state.heading){mapSize=Math.min(w-56,h-70);mapY=(h-mapSize)/2;headerY=0;footerY=h-60}
+ else if(isStory){mapSize=1010;mapY=435;headerY=245;footerY=1600}
+ else if(isSquare){mapSize=795;mapY=175;headerY=78;footerY=1008}
+ else{mapSize=985;mapY=245;headerY=104;footerY=1267}
+ const mapX=(w-mapSize)/2;
+ const titleSize=fontFit(state.title,950,isSquare?56:72,27);
+ const subtitleSize=fontFit(state.subtitle,950,23,15);
+ const dateSize=fontFit(state.date,950,24,16);
+ const heading=state.heading?`<g id="export-heading"><text x="58" y="${headerY}" fill="${p.fg}" font-size="${titleSize}" font-weight="800" letter-spacing="-2">${esc(state.title)}</text><text x="60" y="${headerY+43}" fill="${p.muted}" font-size="${subtitleSize}" font-weight="550" letter-spacing="2">${esc(state.subtitle)}</text>${state.date?`<text x="60" y="${headerY+85}" fill="${p.fg}" font-size="${dateSize}">${esc(state.date)}</text>`:''}${!isSquare?`<path d="M60 ${headerY+(state.date?109:81)}H1020" stroke="${p.rule}" stroke-width="1.5"/>`:''}</g>`:'';
+ const shapes=DISTRICTS.map(d=>{const selected=state.selected.includes(d.id);return `<g data-district="${d.id}" class="district${selected?' selected':''}"${interactive?` role="button" tabindex="0" aria-label="${esc(d.name)}" aria-pressed="${selected}"`:''}><title>${esc(d.name)}${interactive?' \u2014 kliknut\u00edm p\u0159epne\u0161 ozna\u010den\u00ed':''}</title><path class="region-shape" d="${d.path}" fill="${selected?RED:p.fill}" stroke="${p.stroke}" stroke-width="1.45" stroke-linejoin="round"/></g>`}).join('');
+ const names=state.labels?`<g class="map-labels" aria-hidden="true" pointer-events="none">${DISTRICTS.map(d=>`<text class="district-label" data-label="${d.id}" x="${d.x}" y="${d.y}"${d.rotate?` transform="rotate(${d.rotate} ${d.x} ${d.y})"`:""} fill="${state.selected.includes(d.id)?'#ffffff':p.fg}" text-anchor="middle" dominant-baseline="middle" font-size="${d.font}" font-weight="650" letter-spacing=".25">${esc(d.label)}</text>`).join('')}</g>`:'';
+ const legend=state.heading?`<g id="legend"><rect x="62" y="${footerY-17}" width="18" height="18" rx="2" fill="${RED}"/><text x="94" y="${footerY}" font-size="21" fill="${p.fg}">Zasa\u017een\u00e1 \u010dtvr\u0165</text><rect x="365" y="${footerY-17}" width="18" height="18" rx="2" fill="${p.fill}" stroke="${p.stroke}" stroke-width="1.5"/><text x="397" y="${footerY}" font-size="21" fill="${p.muted}">Bez ozna\u010den\u00ed</text><text x="62" y="${footerY+40}" font-size="16" fill="${p.muted}">Ozna\u010den\u00ed \u010dtvrti nevyjad\u0159uje rozsah zasa\u017een\u00ed.</text></g>`:'';
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-labelledby="map-access-title map-access-desc" font-family="Arial, Helvetica, sans-serif" style="--map-hover:${p.hover}"><title id="map-access-title">Kyjev — interaktivní mapa čtvrtí</title><desc id="map-access-desc">Deset čtvrtí podle dodané předlohy. Červeně jsou pouze ručně označené čtvrti.</desc>${transparent?'':`<rect width="${w}" height="${h}" fill="${p.bg}"/>`}${heading}<svg x="${mapX}" y="${mapY}" width="${mapSize}" height="${mapSize}" viewBox="0 0 661 661" overflow="visible">${shapes}${names}</svg><g id="district-annotations">${annotationMarkup(interactive)}</g>${legend}</svg>`;
+}
+function render(){
+ $('#preview').innerHTML=svgMarkup(true);
+ $('#size-label').textContent=`${FORMATS[state.format].w} \u00d7 ${FORMATS[state.format].h}`;
+ sync();
+}
+function sync(){
+ const n=state.selected.length,p=PALETTES[state.theme];
+ $('#count').textContent=`${n} / 10`;$('#count-bottom').textContent=`${n} / 10`;
+ $('#clear').disabled=!n;$('#undo').disabled=!historyStack.length;
+ $('#theme-dark').setAttribute('aria-pressed',String(state.theme==='dark'));$('#theme-light').setAttribute('aria-pressed',String(state.theme==='light'));
+ document.querySelectorAll('[data-district]').forEach(el=>{const on=state.selected.includes(el.dataset.district);el.classList.toggle('selected',on);el.setAttribute('aria-pressed',String(on));const path=el.querySelector('.region-shape');if(path)path.setAttribute('fill',on?RED:p.fill)});
+ document.querySelectorAll('[data-label]').forEach(el=>el.setAttribute('fill',state.selected.includes(el.dataset.label)?'#ffffff':p.fg));
+ document.querySelectorAll('[data-pick]').forEach(el=>el.setAttribute('aria-pressed',String(state.selected.includes(el.dataset.pick))));
+ const note=$('#selection-note');note.classList.toggle('has-selection',!!n);note.textContent=n?DISTRICTS.filter(d=>state.selected.includes(d.id)).map(d=>d.name).join(' \u00b7 '):'Zat\u00edm nen\u00ed nic ozna\u010deno.';
+ syncNoteEditors();refreshAnnotations();
+ if(pngResult&&pngResult.stateSignature!==JSON.stringify(state))$('#png-ready').hidden=true;
+ save();
+}
+function snapshot(){historyStack.push({points:state.points.map(p=>({...p})),selected:[...state.selected],notes:{...state.notes},notePositions:JSON.parse(JSON.stringify(state.notePositions)),anchorPositions:JSON.parse(JSON.stringify(state.anchorPositions)),gps:JSON.parse(JSON.stringify(state.gps))});if(historyStack.length>50)historyStack.shift()}
+function toggleDistrict(id){if(!ids.has(id))return;snapshot();state.selected=state.selected.includes(id)?state.selected.filter(x=>x!==id):[...state.selected,id];sync()}
+$('#district-buttons').innerHTML=DISTRICTS.map(d=>`<button type="button" class="district-btn" data-pick="${d.id}" aria-pressed="false"><span class="district-dot" aria-hidden="true"></span>${esc(d.name)}</button>`).join('');
+$('#district-buttons').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b)toggleDistrict(b.dataset.pick)});
+$('#preview').addEventListener('click',e=>{const el=e.target.closest('[data-district]');if(el)toggleDistrict(el.dataset.district)});
+$('#preview').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const el=e.target.closest('[data-district]');if(el){e.preventDefault();if(!e.repeat)toggleDistrict(el.dataset.district)}}});
+$('#clear').addEventListener('click',()=>{if(!state.selected.length)return;snapshot();state.selected=[];sync();notify('V\u00fdb\u011br byl vymaz\u00e1n. Tla\u010d\u00edtkem Zp\u011bt ho m\u016f\u017ee\u0161 vr\u00e1tit.')});
+$('#undo').addEventListener('click',()=>{if(historyStack.length){Object.assign(state,historyStack.pop());noteEditSession=null;resetGpsDrafts();sync()}});
+for(const [key,id] of [['title','map-title'],['subtitle','map-subtitle'],['date','map-date']]){const input=$('#'+id);input.value=state[key];input.addEventListener('input',()=>{state[key]=input.value;render()})}
+for(const [key,id] of [['labels','show-labels'],['heading','show-heading']]){const input=$('#'+id);input.checked=state[key];input.addEventListener('change',()=>{state[key]=input.checked;render()})}
+for(const theme of ['dark','light'])$('#theme-'+theme).addEventListener('click',()=>{state.theme=theme;render()});
+$('#export-format').value=state.format;$('#export-format').addEventListener('change',e=>{state.format=e.target.value;render()});
+// Portable image export. A user-clickable save link remains available even when
+// a mobile browser refuses an automatic asynchronous download.
+let pngResult=null,pngObjectURL=null;
+function filename(ext){return 'kyjev-'+state.format+(state.selected.length?'-oznaceno':'-mapa')+'.'+ext}
+function clickDownload(url,name){
+ const a=document.createElement('a');a.href=url;a.download=name;a.rel='noopener';a.dataset.exportTemporary='true';
+ document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),1000);
+}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob);clickDownload(url,name);setTimeout(()=>URL.revokeObjectURL(url),60000)}
+function exportSVGDocument(options={}){
+ const doc=new DOMParser().parseFromString(xmlText(svgMarkup(false,options)),'image/svg+xml');
+ if(doc.querySelector('parsererror'))throw new Error('SVG export contains invalid XML');
+ return doc;
+}
+function loadExportImage(markup,w,h){
+ return new Promise((resolve,reject)=>{
+  const image=new Image();let finished=false;
+  const timer=setTimeout(()=>finish(new Error('SVG image load timed out')),4500);
+  const finish=(error)=>{if(finished)return;finished=true;clearTimeout(timer);image.onload=null;image.onerror=null;error?reject(error):resolve(image)};
+  image.onload=()=>image.naturalWidth?finish():finish(new Error('SVG image is empty'));
+  image.onerror=()=>finish(new Error('This browser did not load the SVG image'));
+  image.width=w;image.height=h;
+  // No intermediate SVG blob URL or external resources: safer on local files.
+  image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(markup);
+ });
+}
+function pngBlobFromCanvas(canvas){
+ return new Promise((resolve,reject)=>{
+  let done=false;
+  const fallback=()=>{if(done)return;try{
+   const data=canvas.toDataURL('image/png');if(!data.startsWith('data:image/png;base64,'))throw new Error('Empty PNG');
+   const bytes=atob(data.split(',')[1]),array=new Uint8Array(bytes.length);
+   for(let i=0;i<bytes.length;i++)array[i]=bytes.charCodeAt(i);
+   done=true;clearTimeout(timer);resolve(new Blob([array],{type:'image/png'}));
+  }catch(error){done=true;clearTimeout(timer);reject(error)}};
+  const timer=setTimeout(fallback,4000);
+  try{
+   if(typeof canvas.toBlob!=='function'){fallback();return}
+   canvas.toBlob(blob=>{if(done)return;if(blob&&blob.size){done=true;clearTimeout(timer);resolve(blob)}else fallback()},'image/png');
+  }catch(error){fallback()}
+ });
+}
+// Independent fallback rasterizer for the exact SVG elements used in this file.
+// It reads the existing export SVG: no retracing, new map data or remote service.
+function drawSVGToCanvas(root,w,h){
+ const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+ const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas unavailable');
+ const defaults={fill:'#000000',stroke:'none','stroke-width':'1','stroke-linejoin':'miter','stroke-linecap':'butt','font-size':'16','font-family':'Arial, Helvetica, sans-serif','font-weight':'400','text-anchor':'start','dominant-baseline':'auto','letter-spacing':'0','fill-opacity':'1','stroke-opacity':'1'};
+ const num=(e,k,d=0)=>{const n=parseFloat(e.getAttribute(k));return Number.isFinite(n)?n:d};
+ function transform(value){
+  for(const m of String(value||'').matchAll(/([a-zA-Z]+)\(([^)]*)\)/g)){
+   const a=m[2].trim().split(/[\s,]+/).map(Number);if(a.some(n=>!Number.isFinite(n)))continue;
+   if(m[1]==='translate')ctx.translate(a[0]||0,a[1]||0);
+   else if(m[1]==='scale')ctx.scale(a[0],a.length>1?a[1]:a[0]);
+   else if(m[1]==='rotate'){const x=a[1]||0,y=a[2]||0;ctx.translate(x,y);ctx.rotate(a[0]*Math.PI/180);ctx.translate(-x,-y)}
+   else if(m[1]==='matrix'&&a.length===6)ctx.transform(...a);
+  }
+ }
+ function paint(path,st){
+  if(st.fill&&st.fill!=='none'){ctx.save();ctx.globalAlpha*=Number(st['fill-opacity']);ctx.fillStyle=st.fill;ctx.fill(path);ctx.restore()}
+  if(st.stroke&&st.stroke!=='none'&&parseFloat(st['stroke-width'])>0){ctx.save();ctx.globalAlpha*=Number(st['stroke-opacity']);ctx.strokeStyle=st.stroke;ctx.lineWidth=parseFloat(st['stroke-width']);ctx.lineJoin=st['stroke-linejoin'];ctx.lineCap=st['stroke-linecap'];ctx.stroke(path);ctx.restore()}
+ }
+ function text(value,x,y,st){
+  ctx.font=st['font-weight']+' '+st['font-size']+'px '+st['font-family'];
+  ctx.textBaseline=st['dominant-baseline']==='middle'?'middle':'alphabetic';ctx.textAlign='left';
+  const spacing=parseFloat(st['letter-spacing'])||0,chars=Array.from(value);
+  const textWidth=spacing?chars.reduce((n,c)=>n+ctx.measureText(c).width,0)+Math.max(0,chars.length-1)*spacing:ctx.measureText(value).width;
+  let start=x;if(st['text-anchor']==='middle')start-=textWidth/2;else if(st['text-anchor']==='end')start-=textWidth;
+  ctx.save();ctx.globalAlpha*=Number(st['fill-opacity']);ctx.fillStyle=st.fill;
+  if(st.fill!=='none'){
+   if(!spacing)ctx.fillText(value,start,y);
+   else{let cursor=start;for(const ch of chars){ctx.fillText(ch,cursor,y);cursor+=ctx.measureText(ch).width+spacing}}
+  }
+  ctx.restore();return textWidth;
+ }
+ function draw(el,inherited){
+  const tag=el.localName;if(['title','desc','metadata','defs','style'].includes(tag))return;
+  const st={...inherited};for(const k of Object.keys(defaults))if(el.hasAttribute(k))st[k]=el.getAttribute(k);
+  ctx.save();if(el.hasAttribute('opacity'))ctx.globalAlpha*=num(el,'opacity',1);transform(el.getAttribute('transform'));
+  if(tag==='svg'){
+   ctx.translate(num(el,'x'),num(el,'y'));
+   const view=(el.getAttribute('viewBox')||'').trim().split(/[\s,]+/).map(Number);
+   if(view.length===4&&view[2]>0&&view[3]>0){const ew=num(el,'width',view[2]),eh=num(el,'height',view[3]),scale=Math.min(ew/view[2],eh/view[3]);ctx.translate((ew-view[2]*scale)/2,(eh-view[3]*scale)/2);ctx.scale(scale,scale);ctx.translate(-view[0],-view[1])}
+  }
+  if(tag==='path'){paint(new Path2D(el.getAttribute('d')||''),st)}
+  else if(tag==='rect'){
+   const x=num(el,'x'),y=num(el,'y'),rw=num(el,'width'),rh=num(el,'height'),rx=Math.min(num(el,'rx'),rw/2),ry=Math.min(num(el,'ry',rx),rh/2),path=new Path2D();
+   if(rx||ry){path.moveTo(x+rx,y);path.lineTo(x+rw-rx,y);path.quadraticCurveTo(x+rw,y,x+rw,y+ry);path.lineTo(x+rw,y+rh-ry);path.quadraticCurveTo(x+rw,y+rh,x+rw-rx,y+rh);path.lineTo(x+rx,y+rh);path.quadraticCurveTo(x,y+rh,x,y+rh-ry);path.lineTo(x,y+ry);path.quadraticCurveTo(x,y,x+rx,y);path.closePath()}
+   else path.rect(x,y,rw,rh);paint(path,st);
+  }else if(tag==='circle'){const path=new Path2D();path.arc(num(el,'cx'),num(el,'cy'),num(el,'r'),0,Math.PI*2);paint(path,st)}
+  else if(tag==='text'){
+   let x=num(el,'x'),y=num(el,'y');
+   for(const child of el.childNodes){
+    if(child.nodeType===3){if(child.textContent.trim())x+=text(child.textContent,x,y,st)}
+    else if(child.nodeType===1&&child.localName==='tspan'){
+     const ts={...st};for(const k of Object.keys(defaults))if(child.hasAttribute(k))ts[k]=child.getAttribute(k);
+     x=num(child,'x',x)+num(child,'dx');y=num(child,'y',y)+num(child,'dy');x+=text(child.textContent,x,y,ts);
+    }
+   }
+  }else if(tag==='svg'||tag==='g'){for(const child of el.children)draw(child,st)}
+  ctx.restore();
+ }
+ draw(root,defaults);return canvas;
+}
+async function createPNG(options={}){
+ const stateSignature=JSON.stringify(state),signature=JSON.stringify({state:stateSignature,transparent:!!options.transparent}),{w,h}=FORMATS[state.format],doc=exportSVGDocument(options),markup=new XMLSerializer().serializeToString(doc.documentElement);
+ try{
+  const image=await loadExportImage(markup,w,h),canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas unavailable');ctx.drawImage(image,0,0,w,h);
+  return {blob:await pngBlobFromCanvas(canvas),w,h,signature,stateSignature,method:'svg-image'};
+ }catch(error){
+  console.info('PNG: using direct canvas fallback',error.message);
+  return {blob:await pngBlobFromCanvas(drawSVGToCanvas(doc.documentElement,w,h)),w,h,signature,stateSignature,method:'direct-canvas'};
+ }
+}
+function setPNGResult(result,name){
+ const old=pngObjectURL;pngObjectURL=URL.createObjectURL(result.blob);pngResult={...result,name};
+ if(old)setTimeout(()=>URL.revokeObjectURL(old),60000);
+ for(const id of ['png-save-link','png-modal-save']){const a=$('#'+id);a.href=pngObjectURL;a.download=name}
+ $('#png-modal-open').href=pngObjectURL;$('#png-preview-image').src=pngObjectURL;
+ $('#png-ready-info').textContent='PNG '+result.w+' × '+result.h+' je připravené. Nestáhlo se? Ulož ho tady:';
+ $('#png-ready').hidden=JSON.stringify(state)!==result.stateSignature;
+ let shareable=false;try{shareable=!!(navigator.canShare&&navigator.canShare({files:[new File([result.blob],name,{type:'image/png'})]}))}catch(e){}
+ $('#png-share').hidden=!shareable;
+}
+function initializePngPreview(){
+ const modal=$('#png-preview'),close=()=>{if(typeof modal.close==='function')modal.close();else modal.removeAttribute('open')};
+ $('#png-show-preview').addEventListener('click',()=>{if(!pngResult)return;if(typeof modal.showModal==='function')modal.showModal();else modal.setAttribute('open','');$('#png-close').focus()});
+ $('#png-close').addEventListener('click',close);
+ modal.addEventListener('click',e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close()}});
+ $('#png-share').addEventListener('click',async()=>{if(!pngResult)return;try{await navigator.share({files:[new File([pngResult.blob],pngResult.name,{type:'image/png'})]})}catch(e){if(e.name!=='AbortError')notify('Pou\u017eij tla\u010d\u00edtko St\u00e1hnout PNG nebo podr\u017e prst na obr\u00e1zku.')}});
+}
+$('#export-svg').addEventListener('click',()=>{
+ try{const doc=exportSVGDocument();downloadBlob(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+new XMLSerializer().serializeToString(doc.documentElement)],{type:'image/svg+xml;charset=utf-8'}),filename('svg'));notify('SVG je p\u0159ipraven\u00e9.')}
+ catch(e){console.error(e);$('#export-error').textContent='SVG se nepoda\u0159ilo vytvo\u0159it. '+e.message;$('#export-error').hidden=false}
+});
+$('#export-png').addEventListener('click',async()=>{
+ const button=$('#export-png');button.disabled=true;button.setAttribute('aria-busy','true');$('#export-error').hidden=true;
+ const name=filename('png');
+ try{
+  const result=await createPNG();setPNGResult(result,name);
+  // Keep a durable manual link even if this automatic click is ignored.
+  try{clickDownload(pngObjectURL,name)}catch(e){console.info('Use the visible PNG save link',e)}
+  notify('PNG '+result.w+' \u00d7 '+result.h+' je p\u0159ipraven\u00e9.');
+ }catch(error){
+  console.error(error);$('#export-error').hidden=false;$('#export-error').textContent='PNG se nepoda\u0159ilo vytvo\u0159it. St\u00e1hni tento HTML soubor a otev\u0159i jej p\u0159\u00edmo v prohl\u00ed\u017ee\u010di, ne jen v n\u00e1hledu p\u0159\u00edlohy. Tvoje data z\u016fstala zachov\u00e1na.';
+  notify('PNG se nepoda\u0159ilo vytvo\u0159it. Pod tla\u010d\u00edtkem je vysv\u011btlen\u00ed.');
+ }finally{button.disabled=false;button.removeAttribute('aria-busy')}
+});
+$('#export-png-transparent').addEventListener('click',async()=>{
+ const button=$('#export-png-transparent');button.disabled=true;button.setAttribute('aria-busy','true');$('#export-error').hidden=true;
+ const name='kyjev-'+state.format+(state.selected.length?'-oznaceno':'-mapa')+'-bez-pozadi.png';
+ try{
+  const result=await createPNG({transparent:true});setPNGResult(result,name);
+  try{clickDownload(pngObjectURL,name)}catch(e){console.info('Use the visible PNG save link',e)}
+  notify('PNG bez pozadí je připravené.');
+ }catch(error){
+  console.error(error);$('#export-error').hidden=false;$('#export-error').textContent='PNG bez pozadí se nepodařilo vytvořit. Stáhni tento HTML soubor a otevři jej přímo v prohlížeči, ne jen v náhledu přílohy. Tvoje data zůstala zachována.';
+  notify('PNG bez pozadí se nepodařilo vytvořit. Pod tlačítkem je vysvětlení.');
+ }finally{button.disabled=false;button.removeAttribute('aria-busy')}
+});
+$('#export-html').addEventListener('click',()=>{
+ const clone=document.documentElement.cloneNode(true);clone.querySelectorAll('[data-export-temporary]').forEach(el=>el.remove());clone.querySelector('#embedded-state').textContent=JSON.stringify(state).replace(/</g,'\\u003c');
+ const toast=clone.querySelector('#toast');toast.classList.remove('show');toast.textContent='';
+ clone.querySelector('#png-ready').hidden=true;clone.querySelector('#export-error').hidden=true;clone.querySelector('#export-error').textContent='';
+ clone.querySelector('#png-preview').removeAttribute('open');clone.querySelector('#png-preview-image').removeAttribute('src');
+ for(const id of ['png-save-link','png-modal-save','png-modal-open'])clone.querySelector('#'+id).removeAttribute('href');
+ clone.querySelector('#png-ready-info').textContent='';for(const id of ['export-png','export-png-transparent']){clone.querySelector('#'+id).disabled=false;clone.querySelector('#'+id).removeAttribute('aria-busy');}
+ downloadBlob(new Blob(['<!doctype html>\n'+clone.outerHTML],{type:'text/html;charset=utf-8'}),'kyjev-mapa-vice-bodu-s-vyberem.html');
+ notify('HTML uchov\u00e1 v\u0161echny body, sou\u0159adnice a popisky.');
+});
+
+initializeNoteEditors();
+initializeGpsEditors();
+initializeExtraPointEditors();
+initializePngPreview();
+render();
+</script>
+</body>
+</html>
